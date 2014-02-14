@@ -4,11 +4,10 @@ import android.content.res.*;
 import android.graphics.*;
 import android.graphics.BitmapFactory.*;
 
-public class Medkit extends Bonus {
-    float value = 15;
+public class SpeedBonus extends Bonus {
     public static Bitmap sprite;
 
-    Medkit(float x, float y, Game context) {
+    SpeedBonus(float x, float y, Game context) {
         super(x, y, context);
     }
 
@@ -21,13 +20,13 @@ public class Medkit extends Bonus {
         Options options = new
                 BitmapFactory.Options();
         options.inScaled = false;
-        sprite = BitmapFactory.decodeResource(resources, R.raw.medkit, options);
+        sprite = BitmapFactory.decodeResource(resources, R.raw.speedbonus, options);
         sprite = Bitmap.createScaledBitmap(sprite,
                 sprite.getWidth() * scale, sprite.getHeight() * scale, false);
 
     }
 
     public void activate(Player owner) {
-        owner.heal(value);
+        owner.effects.add(new SpeedEffect(owner));
     }
 }

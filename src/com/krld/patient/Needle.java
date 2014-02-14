@@ -1,10 +1,20 @@
 package com.krld.patient;
 
+import android.content.res.*;
 import android.graphics.*;
+import android.graphics.BitmapFactory.*;
 
-public class Needle extends Unit
+public class Needle extends Bullet
 {
-	Float deltaX, deltaY;
+
+	public long getBirthDate()
+	{
+		return birthDate;
+	}
+	
+	
+
+	public static Bitmap sprite;
 
 	long birthDate;
 	static long lifeTime = 10000;
@@ -15,16 +25,22 @@ public class Needle extends Unit
 	Needle(float x, float y, Game context)
 	{
 		super(x, y, context);
-		speed = 8;
+		speed = 26;
 	}
 	Needle(float x, float y 
 		   , Game context, Unit target)
 	{
+		this(x, y, context, target.x,target.y);
+	}
+	
+	Needle(float x, float y 
+	, Game context, float targetX, float targetY)
+	{
 		super(x, y, context);
-		speed = 12;
+		speed = 16;
 		size = 10;
-		moveX = target.x;
-		moveY = target.y;
+		moveX = targetX;
+		moveY = targetY;
 		birthDate = System.currentTimeMillis();
 	}
 
@@ -34,68 +50,26 @@ public class Needle extends Unit
 			Math.abs(y - context.player.y) < TOUCH_RANGE)
 		{
 			context.player.damage(touchDmg);
+			context.animations.add(new BloodAnimation(x,y, context));
 			return true;	
 		}
 		return false;
 	}
 
-	public void move()
-	{
-		if (moveX == null || moveY == null || speed == 0) 
-			return;
-		if (deltaX == null || deltaY == null)
-		{
-			float tX = Math.abs(x - moveX) / speed;
-			float tY = Math.abs(y - moveY) / speed;
-			if (tX > tY)
-			{
-				deltaX = (moveX - x) / tX;
-				deltaY = (moveY - y) / tX;				
-			}
-			else
-			{
-				deltaX = (moveX - x) / tY;
-				deltaY = (moveY - y) / tY;
-			}
-			float multiply = speed / (Math.abs(deltaX) + Math.abs(deltaY));
-			deltaX *= multiply;
-			deltaY *= multiply;	
-		}
-		x += deltaX;
-		y += deltaY;
-	}
 
 	public void draw(Canvas canvas, Paint paint)
+	{   
+		Utils.drawBitmapRotate(sprite, x, y, Utils.getAngle(deltaX, deltaY) -90, canvas, paint);
+	}
+	
+	public static void init(Resources resources)
 	{
-		if (deltaX > 0)
-		{
-			paint.setColor(Color.WHITE);
-			paint.setStrokeWidth(8);
-			canvas.drawLine(x - 25, y , x + 10, y , paint);
-			paint.setStrokeWidth(16);
-			canvas.drawLine(x - 16, y, x - 18, y, paint);
-			canvas.drawLine(x - 25, y, x - 23, y, paint);
-			paint.setStrokeWidth(6);
-			paint.setColor(Color.YELLOW);
-			canvas.drawLine(x - 10, y , x + 8, y , paint);
-			paint.setStrokeWidth(1);
-			paint.setColor(Color.BLACK);
-			canvas.drawLine(x + 10, y , x + 35, y , paint);
-		}
-		else
-		{
-			paint.setColor(Color.WHITE);
-			paint.setStrokeWidth(8);
-			canvas.drawLine(x + 25, y , x - 10, y , paint);
-			paint.setStrokeWidth(16);
-			canvas.drawLine(x + 16, y, x + 18, y, paint);
-			canvas.drawLine(x + 25, y, x + 23, y, paint);
-			paint.setStrokeWidth(6);
-			paint.setColor(Color.YELLOW);
-			canvas.drawLine(x + 10, y , x - 8, y , paint);
-			paint.setStrokeWidth(1);
-			paint.setColor(Color.BLACK);
-			canvas.drawLine(x - 10, y , x - 35, y , paint);
-		}
+		int scale = 2;
+		Options options = new
+			BitmapFactory.Options();
+		options.inScaled = false;
+		sprite = BitmapFactory.decodeResource(resources, R.raw.needle, options);
+		sprite = Bitmap.createScaledBitmap(sprite,
+										   sprite.getWidth() * scale, sprite.getHeight() * scale, false);
 	}
 }
