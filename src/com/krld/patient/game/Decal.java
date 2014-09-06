@@ -1,10 +1,10 @@
-package com.krld.patient;
+package com.krld.patient.game;
 
 public class Decal extends Unit
 { 
 	private long duration;
 	private long birthDate;
-	Decal(float x, float y, Game context)
+	Decal(float x, float y, GameView context)
 	{
 		super(x, y, context);
 		birthDate = System.currentTimeMillis();

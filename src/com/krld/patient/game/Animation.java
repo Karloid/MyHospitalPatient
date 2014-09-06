@@ -1,11 +1,11 @@
-package com.krld.patient;
+package com.krld.patient.game;
 
 import android.graphics.*;
 
 public abstract class Animation extends Unit
 {
     long birthDate;
-	Animation(float x, float y, Game context)
+	Animation(float x, float y, GameView context)
 	{
 		super(x, y, context);
 		birthDate = System.currentTimeMillis();

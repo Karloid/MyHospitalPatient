@@ -1,7 +1,8 @@
-package com.krld.patient;
+package com.krld.patient.game;
 import android.content.res.*;
 import android.graphics.*;
 import android.graphics.BitmapFactory.*;
+import com.krld.patient.R;
 
 public class BombSpot extends Decal
 {
@@ -18,7 +19,7 @@ public class BombSpot extends Decal
 
 	private float rotare;
 
-	BombSpot(float x, float y, Game context)
+	BombSpot(float x, float y, GameView context)
 	{
 		super(x, y, context);
 		type = (byte)(Math.random() * 5);

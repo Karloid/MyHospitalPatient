@@ -1,10 +1,10 @@
-package com.krld.patient;
+package com.krld.patient.game;
 
 public class Creep extends Unit {
 
     private static final int REWARD = 0;
 
-    Creep(float x, float y, Game context) {
+    Creep(float x, float y, GameView context) {
         super(x, y, context);
         birth();
     }

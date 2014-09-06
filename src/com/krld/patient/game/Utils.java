@@ -1,8 +1,9 @@
-package com.krld.patient;
+package com.krld.patient.game;
 
 import android.graphics.*;
 import android.content.res.*;
 import android.graphics.BitmapFactory.*;
+import com.krld.patient.R;
 
 public class Utils {
 
@@ -13,6 +14,7 @@ public class Utils {
         Bitmap sprite;
         sprite = BitmapFactory.decodeResource(resources, rawFile, options);
         sprite = Bitmap.createScaledBitmap(sprite, sprite.getWidth() * scale, sprite.getHeight() * scale, false);
+        sprite.setDensity(resources.getDisplayMetrics().densityDpi);
         return sprite;
     }
 
@@ -52,5 +54,9 @@ public class Utils {
             result += "\n " + element.toString();
         }
         return result;
+    }
+
+    public static Bitmap loadSprite(int player, Resources resources) {
+        return Utils.loadSprite(player, resources, GameView.DEFAULT_SCALE_FACTOR);
     }
 }

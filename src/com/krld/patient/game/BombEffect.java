@@ -1,4 +1,4 @@
-package com.krld.patient;
+package com.krld.patient.game;
 import android.graphics.*;
 import java.util.*;
 
@@ -16,10 +16,10 @@ public class BombEffect extends Effect
 	{
 		paint.setColor(Color.RED);
 		paint.setAlpha(200);
-		canvas.drawCircle(owner.x , owner.y + 8, effectRadius, paint);
+		canvas.drawCircle(owner.x , owner.y + yCorrection, effectRadius, paint);
     	paint.setColor(Color.YELLOW);
 		paint.setAlpha(88);
-    	canvas.drawCircle(owner.x , owner.y + 8, effectRadius / 5, paint);
+    	canvas.drawCircle(owner.x , owner.y + yCorrection, effectRadius / 5, paint);
 		paint.setAlpha(255);
 		effectRadius *= 1.5;
 	}

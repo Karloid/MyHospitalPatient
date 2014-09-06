@@ -1,7 +1,7 @@
-package com.krld.patient;
+package com.krld.patient.game;
 
 public abstract class Bonus extends Unit {
-    Bonus(float x, float y, Game context) {
+    Bonus(float x, float y, GameView context) {
         super(x, y, context);
     }
 

@@ -1,4 +1,4 @@
-package com.krld.patient;
+package com.krld.patient.game;
 
 import android.graphics.*;
 
@@ -6,7 +6,7 @@ public class NoteDummy extends Creep
 {
 
 	private boolean activated = false;
-	NoteDummy(float x, float y, Game context)
+	NoteDummy(float x, float y, GameView context)
 	{
 		super(x, y, context);
 		speed = 0;

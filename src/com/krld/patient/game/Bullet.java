@@ -1,11 +1,11 @@
-package com.krld.patient;
+package com.krld.patient.game;
 
 public abstract class Bullet extends Unit
 {
 
 	Float deltaX, deltaY;
 
-	Bullet(float x, float y, Game context)
+	Bullet(float x, float y, GameView context)
 	{
 		super(x, y, context);
 	}

@@ -1,4 +1,4 @@
-package com.krld.patient;
+package com.krld.patient.game;
 
 import android.content.res.*;
 import android.graphics.*;
@@ -20,13 +20,13 @@ public abstract class Unit {
     int hp;
     int maxHp;
 
-    Game context;
+    GameView context;
 
     private static final float PICK_RANGE = 50;
 
     private static final int DECAY_DMG = 1;
 
-    Unit(float x, float y, Game context) {
+    Unit(float x, float y, GameView context) {
         this.x = x;
         this.y = y;
         this.context = context;

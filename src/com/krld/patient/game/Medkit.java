@@ -1,14 +1,15 @@
-package com.krld.patient;
+package com.krld.patient.game;
 
 import android.content.res.*;
 import android.graphics.*;
 import android.graphics.BitmapFactory.*;
+import com.krld.patient.R;
 
 public class Medkit extends Bonus {
     float value = 15;
     public static Bitmap sprite;
 
-    Medkit(float x, float y, Game context) {
+    Medkit(float x, float y, GameView context) {
         super(x, y, context);
     }
 
@@ -17,13 +18,7 @@ public class Medkit extends Bonus {
     }
 
     public static void init(Resources resources) {
-        int scale = 2;
-        Options options = new
-                BitmapFactory.Options();
-        options.inScaled = false;
-        sprite = BitmapFactory.decodeResource(resources, R.raw.medkit, options);
-        sprite = Bitmap.createScaledBitmap(sprite,
-                sprite.getWidth() * scale, sprite.getHeight() * scale, false);
+        sprite = Utils.loadSprite(R.raw.medkit, resources, GameView.DEFAULT_SCALE_FACTOR_FOR_BONUS);
 
     }
 

@@ -1,13 +1,14 @@
-package com.krld.patient;
+package com.krld.patient.game;
 
 import android.content.res.*;
 import android.graphics.*;
 import android.graphics.BitmapFactory.*;
+import com.krld.patient.R;
 
 public class SpeedBonus extends Bonus {
     public static Bitmap sprite;
 
-    SpeedBonus(float x, float y, Game context) {
+    SpeedBonus(float x, float y, GameView context) {
         super(x, y, context);
     }
 
@@ -16,13 +17,7 @@ public class SpeedBonus extends Bonus {
     }
 
     public static void init(Resources resources) {
-        int scale = 2;
-        Options options = new
-                BitmapFactory.Options();
-        options.inScaled = false;
-        sprite = BitmapFactory.decodeResource(resources, R.raw.speedbonus, options);
-        sprite = Bitmap.createScaledBitmap(sprite,
-                sprite.getWidth() * scale, sprite.getHeight() * scale, false);
+        sprite = Utils.loadSprite(R.raw.speedbonus, resources, GameView.DEFAULT_SCALE_FACTOR_FOR_BONUS);
 
     }
 

@@ -1,4 +1,4 @@
-package com.krld.patient;
+package com.krld.patient.game;
 
 import android.graphics.*;
 
@@ -20,7 +20,7 @@ public class SpeedEffect extends Effect {
         for (Point pos : positions) {
             alpha += step;
             paint.setAlpha(alpha);
-            canvas.drawBitmap(Player.sprite, pos.x - Player.sprite.getWidth(), pos.y - Player.sprite.getHeight() / 1.5f, paint);
+            canvas.drawBitmap(Player.sprite, pos.x - Player.sprite.getWidth() / 2, pos.y - Player.sprite.getHeight() / 1.5f, paint);
         }
         paint.setAlpha(255);
     }

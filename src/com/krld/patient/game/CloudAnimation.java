@@ -1,20 +1,20 @@
-package com.krld.patient;
+package com.krld.patient.game;
 
 
 import android.content.res.*;
 import android.graphics.*;
-import android.graphics.BitmapFactory.*;
 import com.krld.patient.*;
 import java.util.*;
 
 public class CloudAnimation extends Animation
 {
 
-	private byte frameIndex;
+    private byte frameIndex;
 
 	private boolean stop;
+    public static final int SCALE_FACTOR = 4;
 
-	public byte getFrameIndex()
+    public byte getFrameIndex()
 	{
 		return frameIndex;
 	}
@@ -26,7 +26,7 @@ public class CloudAnimation extends Animation
 
     public static List<Bitmap> sprites;
 
-	CloudAnimation(float x, float y, Game context)
+	CloudAnimation(float x, float y, GameView context)
 	{
 		super(x, y, context);
 		birthDate = System.currentTimeMillis();
@@ -37,21 +37,20 @@ public class CloudAnimation extends Animation
 	public static void init(Resources resources)
 	{
 		sprites = new ArrayList<Bitmap>();
-		int scale = 2;
-		
-		sprites.add(Utils.loadSprite(R.raw.cloud0, resources, scale));
 
-		sprites.add(Utils.loadSprite(R.raw.cloud1, resources, scale));
+        sprites.add(Utils.loadSprite(R.raw.cloud0, resources, SCALE_FACTOR));
 
-		sprites.add(Utils.loadSprite(R.raw.cloud2, resources, scale));
+		sprites.add(Utils.loadSprite(R.raw.cloud1, resources, SCALE_FACTOR));
 
-		sprites.add(Utils.loadSprite(R.raw.cloud3, resources, scale));
+		sprites.add(Utils.loadSprite(R.raw.cloud2, resources, SCALE_FACTOR));
 
-		sprites.add(Utils.loadSprite(R.raw.cloud4, resources, scale));
+		sprites.add(Utils.loadSprite(R.raw.cloud3, resources, SCALE_FACTOR));
 
-		sprites.add(Utils.loadSprite(R.raw.cloud5, resources, scale));
+		sprites.add(Utils.loadSprite(R.raw.cloud4, resources, SCALE_FACTOR));
+
+		sprites.add(Utils.loadSprite(R.raw.cloud5, resources, SCALE_FACTOR));
 	
-		sprites.add(Utils.loadSprite(R.raw.cloud6, resources, scale));
+		sprites.add(Utils.loadSprite(R.raw.cloud6, resources, SCALE_FACTOR));
 	}
 
 	public void draw(Canvas canvas, Paint paint)
