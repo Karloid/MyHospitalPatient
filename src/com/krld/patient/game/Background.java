@@ -17,9 +17,9 @@ public class Background {
 
     private int ySize;
 
-    Background() {
-        xSize = (int) GameView.WIDTH_BASIS / tileSize + 1;
-        ySize = (int) GameView.HEIGHT_MAGIC / tileSize + 1;
+    Background(float widthBasis, float gameHeight) {
+        xSize = (int) widthBasis / tileSize + 1;
+        ySize = (int) gameHeight / tileSize + 1;
         tileMap = new byte[xSize][ySize];
     }
 

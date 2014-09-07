@@ -7,7 +7,6 @@ import android.view.*;
 
 import java.util.*;
 
-import android.graphics.BitmapFactory.Options;
 import com.krld.patient.R;
 
 public class GameView extends View {
@@ -16,6 +15,9 @@ public class GameView extends View {
     public static final float HEIGHT_MAGIC = 900;
     public static final int DEFAULT_SCALE_FACTOR = 6;
     public static final int DEFAULT_SCALE_FACTOR_FOR_BONUS = 4;
+    public static final int NURSE_SPAWN_COOLDOWN = 6000;
+    public static final int HP_BAR_MARGIN = 20;
+    public static final int HP_BAR_WIDTH = 70;
     public Player player;
 
     public List<Bonus> bonuses;
@@ -26,7 +28,7 @@ public class GameView extends View {
 
     public int points;
 
-    Bitmap heart;
+    Bitmap heartBitmap;
 
     private boolean gameOver;
 
@@ -44,11 +46,12 @@ public class GameView extends View {
 
     private Background background;
     private boolean canvasScaleInited;
+    private boolean firstRun = true;
+    private float gameHeight;
+    private float HP_BAR_HEIGHT = 100;
 
     public GameView(Context context) {
         super(context);
-        initSprites();
-        initGame();
     }
 
     private void initGame() {
@@ -56,13 +59,13 @@ public class GameView extends View {
         debugMessage = "";
         points = 0;
 
-        background = new Background();
+        background = new Background(WIDTH_BASIS, gameHeight);
         final GameView game = this;
         gameOver = false;
-        player = new Player(400, 400, this);
+        player = new Player(WIDTH_BASIS / 2, gameHeight / 2, this);
         bonuses = new ArrayList<Bonus>();
         creeps = new ArrayList<Creep>();
-        nurseSpawnCoolDown = 6000;
+        nurseSpawnCoolDown = NURSE_SPAWN_COOLDOWN;
         bullets = new ArrayList<Bullet>();
         decals = new ArrayList<Decal>();
         animations = new ArrayList<Animation>();
@@ -104,7 +107,7 @@ public class GameView extends View {
         Background.init(getResources());
         CloudAnimation.init(getResources());
 
-        heart = Utils.loadSprite(R.raw.heart, getResources());
+        heartBitmap = Utils.loadSprite(R.raw.heart, getResources());
         gameOverSprite = Utils.loadSprite(R.raw.gameover, getResources(), 20);
     }
 
@@ -122,6 +125,12 @@ public class GameView extends View {
         }
         drawUI(canvas, paint);
         drawMisc(canvas, paint);
+    }
+
+    private void init() {
+        initSprites();
+        initGame();
+        firstRun = false;
     }
 
     private void drawMisc(Canvas canvas, Paint paint) {
@@ -147,6 +156,8 @@ public class GameView extends View {
         if (!canvasScaleInited) {
             canvasScale = canvas.getWidth() / WIDTH_BASIS;
             canvasScaleInited = true;
+            gameHeight = canvas.getHeight() / canvasScale;
+            init();
         }
         if (canvasScale != 1f)
             canvas.scale(canvasScale, canvasScale);
@@ -273,19 +284,20 @@ public class GameView extends View {
     }
 
     private void drawLives(Canvas canvas, Paint paint) {
+        float top = gameHeight - HP_BAR_MARGIN - heartBitmap.getHeight();
         for (int i = 0; i < player.lives; i++) {
-            canvas.drawBitmap(heart, 183 + i * (heart.getWidth() + 46), 740, paint);
+            canvas.drawBitmap(heartBitmap, HP_BAR_MARGIN * 2 + HP_BAR_WIDTH + i * (heartBitmap.getWidth() + heartBitmap.getWidth() / 4), top, paint);
         }
     }
 
     private void drawHp(Canvas canvas, Paint paint) {
-        short hpStart = 830;
+        float hpStart = gameHeight - HP_BAR_MARGIN;
+        float hpEnd = hpStart - HP_BAR_HEIGHT;
         paint.setColor(Color.rgb(55, 0, 0));
-        canvas.drawRect(5, 710, 70, hpStart, paint);
+        canvas.drawRect(HP_BAR_MARGIN, hpEnd, HP_BAR_WIDTH, hpStart, paint);
         paint.setColor(Color.RED);
         float multiplayer = player.hp / (player.maxHp * 1f);
-        //	canvas.drawText(multiplayer + " " + player.hp, 100, 100, paint);
-        canvas.drawRect(5, hpStart - (hpStart - 710) * multiplayer, 70, hpStart, paint);
+        canvas.drawRect(HP_BAR_MARGIN, hpStart - (hpStart - hpEnd) * multiplayer, HP_BAR_WIDTH, hpStart, paint);
     }
 
     private void drawPlayer(Canvas canvas, Paint paint) {
