@@ -8,6 +8,8 @@ import java.util.*;
 
 public class Background {
     public static List<Bitmap> sprites;
+    private final float width;
+    private final float height;
 
     byte[][] tileMap;
 
@@ -17,9 +19,11 @@ public class Background {
 
     private int ySize;
 
-    Background(float widthBasis, float gameHeight) {
-        xSize = (int) widthBasis / tileSize + 1;
-        ySize = (int) gameHeight / tileSize + 1;
+    Background(float width, float height) {
+        this.width = width;
+        this.height = height;
+        xSize = (int) width / tileSize + 1;
+        ySize = (int) height / tileSize + 1;
         tileMap = new byte[xSize][ySize];
     }
 
@@ -32,7 +36,7 @@ public class Background {
         }
         paint.setColor(Color.GRAY);
         paint.setAlpha(190);
-        canvas.drawRect(0, 0, GameView.WIDTH_BASIS, GameView.HEIGHT_MAGIC, paint);
+        canvas.drawRect(0, 0, width, height, paint);
         paint.setAlpha(255);
 
     }

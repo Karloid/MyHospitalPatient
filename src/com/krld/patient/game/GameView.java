@@ -1,5 +1,6 @@
 package com.krld.patient.game;
 
+import android.app.Activity;
 import android.content.*;
 import android.graphics.*;
 import android.util.Log;
@@ -9,15 +10,17 @@ import java.util.*;
 
 import com.krld.patient.R;
 
+import static com.krld.patient.game.UIConstants.*;
+
 public class GameView extends View {
     public static final float WIDTH_BASIS = 540f;
-    private static final String TAG = "PATIENT";
-    public static final float HEIGHT_MAGIC = 900;
+    public static final String BEST_TEXT = "BEST: ";
+    private static final String TAG = "PLOG";
     public static final int DEFAULT_SCALE_FACTOR = 6;
     public static final int DEFAULT_SCALE_FACTOR_FOR_BONUS = 4;
     public static final int NURSE_SPAWN_COOLDOWN = 6000;
-    public static final int HP_BAR_MARGIN = 20;
-    public static final int HP_BAR_WIDTH = 70;
+    private static final String BEST_SCORE_KEY = "BEST_SCORE_KEY";
+    public static final String SCORE_TEXT = "SCORE: ";
     public Player player;
 
     public List<Bonus> bonuses;
@@ -26,7 +29,7 @@ public class GameView extends View {
     public List<Decal> decals;
     public List<Animation> animations;
 
-    public int points;
+    public int score;
 
     Bitmap heartBitmap;
 
@@ -48,16 +51,21 @@ public class GameView extends View {
     private boolean canvasScaleInited;
     private boolean firstRun = true;
     private float gameHeight;
-    private float HP_BAR_HEIGHT = 100;
+    private int bestScore;
+    private boolean textInGameOverInited = false;
+    private TextDrawValues textDrawValues;
+
 
     public GameView(Context context) {
         super(context);
+        setOnTouchListener(new MyOnTouchListener());
     }
 
     private void initGame() {
         Log.i(TAG, "INIT");
         debugMessage = "";
-        points = 0;
+        score = 0;
+        loadBestScore();
 
         background = new Background(WIDTH_BASIS, gameHeight);
         final GameView game = this;
@@ -89,6 +97,11 @@ public class GameView extends View {
         }
         );
         runner.start();
+    }
+
+    private void loadBestScore() {
+        SharedPreferences preferences = ((Activity) getContext()).getPreferences(Context.MODE_PRIVATE);
+        bestScore = preferences.getInt(BEST_SCORE_KEY, 0);
     }
 
     private void initSprites() {
@@ -219,7 +232,18 @@ public class GameView extends View {
     private void checkGameOver() {
         if (player.lives == 0) {
             gameOver = true;
+            if (score > bestScore) {
+                bestScore = score;
+                saveBestScore();
+            }
         }
+    }
+
+    private void saveBestScore() {
+        SharedPreferences preferences = ((Activity) getContext()).getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(BEST_SCORE_KEY, bestScore);
+        editor.commit();
     }
 
     private void moveUnits() {
@@ -273,14 +297,60 @@ public class GameView extends View {
     private void drawUI(Canvas canvas, Paint paint) {
         drawHp(canvas, paint);
         drawLives(canvas, paint);
-        canvas.scale(4, 4);
-        canvas.drawText(String.valueOf(points), 5, 15, paint);
-        canvas.scale(0.25f, 0.25f);
+        drawScores(canvas, paint);
         if (gameOver) {
             paint.setColor(Color.BLACK);
-            canvas.drawRect(0, 0, WIDTH_BASIS, HEIGHT_MAGIC, paint);
+            canvas.drawRect(0, 0, WIDTH_BASIS, gameHeight, paint);
             canvas.drawBitmap(gameOverSprite, (WIDTH_BASIS) / 2 - gameOverSprite.getWidth() / 2, 20, paint);
+            drawGameOverScores(canvas, paint);
         }
+    }
+
+    private void drawGameOverScores(Canvas canvas, Paint paint) {
+        paint.setAntiAlias(true);
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(50);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(4);
+        if (!textInGameOverInited) {
+            textDrawValues = new TextDrawValues();
+            textInGameOverInited = true;
+        }
+        float textWidthScore = paint.measureText(SCORE_TEXT );
+        float leftScore = WIDTH_BASIS / 2 - textWidthScore / 1;
+        float textWidthBest = paint.measureText(BEST_TEXT );
+        float leftBest = WIDTH_BASIS / 2 - textWidthBest / 1;
+
+        float top = (gameHeight / 5) * 4;
+        textDrawValues.setLeftScore(leftScore);
+        textDrawValues.setLeftBest(leftBest);
+        textDrawValues.setTop(top);
+
+
+        canvas.drawText(SCORE_TEXT + String.valueOf(score), textDrawValues.getLeftScore(), textDrawValues.getTop(), paint);
+        canvas.drawText(BEST_TEXT + String.valueOf(bestScore), textDrawValues.getLeftBest(), textDrawValues.getTop() + SCORE_TOP_MARGIN * 1.3f, paint);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.RED);
+        canvas.drawText(SCORE_TEXT + String.valueOf(score), textDrawValues.getLeftScore(), textDrawValues.getTop(), paint);
+        canvas.drawText(BEST_TEXT + String.valueOf(bestScore), textDrawValues.getLeftBest(), textDrawValues.getTop() + SCORE_TOP_MARGIN * 1.3f, paint);
+        paint.setAntiAlias(false);
+    }
+
+    private void drawScores(Canvas canvas, Paint paint) {
+        // Typeface typeFace = Typeface.create("Roboto", Typeface.BOLD);
+        //  paint.setTypeface(typeFace);
+        paint.setAntiAlias(true);
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(40);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(3);
+        canvas.drawText(SCORE_TEXT + String.valueOf(score), SCORE_LEFT_MARGIN, SCORE_TOP_MARGIN, paint);
+        canvas.drawText(BEST_TEXT + String.valueOf(bestScore), SCORE_LEFT_MARGIN, SCORE_TOP_MARGIN * 2, paint);
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.RED);
+        canvas.drawText(SCORE_TEXT + String.valueOf(score), SCORE_LEFT_MARGIN, SCORE_TOP_MARGIN, paint);
+        canvas.drawText(BEST_TEXT + String.valueOf(bestScore), SCORE_LEFT_MARGIN, SCORE_TOP_MARGIN * 2, paint);
+        paint.setAntiAlias(false);
     }
 
     private void drawLives(Canvas canvas, Paint paint) {
@@ -304,14 +374,18 @@ public class GameView extends View {
         player.draw(canvas, paint);
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        float x = event.getX() / canvasScale;
-        float y = event.getY() / canvasScale;
-        player.moveTo(x, y);
-        if (gameOver)
-            initGame();
-
-        return super.onTouchEvent(event);
+    private class MyOnTouchListener implements OnTouchListener {
+        @Override
+        public boolean onTouch(View view, MotionEvent event) {
+            //Log.d(TAG, "Mouse event! " + event.getAction());
+            float x = event.getX() / canvasScale;
+            float y = event.getY() / canvasScale;
+            player.moveTo(x, y);
+            if (gameOver) {
+                gameOver = false;
+                initGame();
+            }
+            return true;
+        }
     }
 }

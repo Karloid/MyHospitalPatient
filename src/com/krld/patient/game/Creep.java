@@ -32,7 +32,7 @@ public class Creep extends Unit {
     }
 
     public void die() {
-        context.points += getReward();
+        context.score += getReward();
         createCorpse();
     }
 
