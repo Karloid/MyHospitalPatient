@@ -1,6 +1,8 @@
-package com.krld.patient.game;
+package com.krld.patient.game.model.animations;
 
 import android.graphics.*;
+import com.krld.patient.game.GameView;
+import com.krld.patient.game.model.Unit;
 
 public abstract class Animation extends Unit
 {

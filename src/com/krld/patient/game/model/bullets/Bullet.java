@@ -1,4 +1,8 @@
-package com.krld.patient.game;
+package com.krld.patient.game.model.bullets;
+
+import com.krld.patient.game.GameView;
+import com.krld.patient.game.model.Unit;
+import com.krld.patient.game.model.animations.CloudAnimation;
 
 public abstract class Bullet extends Unit
 {

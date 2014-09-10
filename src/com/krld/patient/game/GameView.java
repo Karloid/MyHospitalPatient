@@ -8,9 +8,20 @@ import android.view.*;
 
 import java.util.*;
 
-import com.krld.patient.R;
-
-import static com.krld.patient.game.UIConstants.*;
+import com.krld.patient.game.model.*;
+import com.krld.patient.game.model.animations.Animation;
+import com.krld.patient.game.model.animations.BloodAnimation;
+import com.krld.patient.game.model.animations.CloudAnimation;
+import com.krld.patient.game.model.bonuses.*;
+import com.krld.patient.game.model.bullets.Bullet;
+import com.krld.patient.game.model.bullets.Needle;
+import com.krld.patient.game.model.bullets.Note;
+import com.krld.patient.game.model.creeps.Creep;
+import com.krld.patient.game.model.creeps.Doctor;
+import com.krld.patient.game.model.creeps.Nurse;
+import com.krld.patient.game.model.decals.BloodSpot;
+import com.krld.patient.game.model.decals.BombSpot;
+import com.krld.patient.game.model.decals.Decal;
 
 public class GameView extends View {
     public static final float WIDTH_BASIS = 540f;
@@ -326,6 +337,10 @@ public class GameView extends View {
             createAndStartRunner();
             Log.i(TAG, "Runner has started");
         }
+    }
+
+    public long getTick() {
+        return tick;
     }
 
     private class MyOnTouchListener implements OnTouchListener {

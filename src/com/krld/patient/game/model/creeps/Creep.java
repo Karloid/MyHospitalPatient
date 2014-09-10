@@ -1,10 +1,16 @@
-package com.krld.patient.game;
+package com.krld.patient.game.model.creeps;
 
-public class Creep extends Unit {
+import com.krld.patient.game.GameView;
+import com.krld.patient.game.model.animations.BloodAnimation;
+import com.krld.patient.game.model.animations.CloudAnimation;
+import com.krld.patient.game.model.Unit;
+import com.krld.patient.game.model.decals.BloodSpot;
+
+public abstract class Creep extends Unit {
 
     private static final int REWARD = 0;
 
-    Creep(float x, float y, GameView context) {
+    public Creep(float x, float y, GameView context) {
         super(x, y, context);
         birth();
     }

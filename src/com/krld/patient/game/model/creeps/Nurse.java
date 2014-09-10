@@ -1,9 +1,11 @@
-package com.krld.patient.game;
+package com.krld.patient.game.model.creeps;
 
 import android.content.res.*;
 import android.graphics.*;
-import android.graphics.BitmapFactory.Options;
 import com.krld.patient.R;
+import com.krld.patient.game.GameView;
+import com.krld.patient.game.Utils;
+import com.krld.patient.game.model.bullets.Needle;
 
 public class Nurse extends Creep {
     public static Bitmap sprite;
@@ -20,7 +22,7 @@ public class Nurse extends Creep {
 
     private static final int REWARD = 200;
 
-    Nurse(float x, float y, GameView context) {
+    public Nurse(float x, float y, GameView context) {
         super(x, y, context);
         speed = 5;
         moveX = x + 1;

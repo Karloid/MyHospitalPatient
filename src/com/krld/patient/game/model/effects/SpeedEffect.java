@@ -1,13 +1,15 @@
-package com.krld.patient.game;
+package com.krld.patient.game.model.effects;
 
 import android.graphics.*;
+import com.krld.patient.game.model.Player;
+import com.krld.patient.game.model.Unit;
 
 import java.util.*;
 
 public class SpeedEffect extends Effect {
     List<Point> positions;
 
-    SpeedEffect(Unit owner) {
+    public SpeedEffect(Unit owner) {
         super(owner);
         positions = new ArrayList<Point>();
     }

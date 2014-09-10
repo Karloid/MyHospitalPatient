@@ -1,10 +1,11 @@
-package com.krld.patient.game;
+package com.krld.patient.game.model.animations;
 
 
 import android.content.res.*;
 import android.graphics.*;
-import android.graphics.BitmapFactory.*;
 import com.krld.patient.*;
+import com.krld.patient.game.GameView;
+import com.krld.patient.game.Utils;
 
 import java.util.*;
 
@@ -25,7 +26,7 @@ public class BloodAnimation extends Animation {
 
     public static List<Bitmap> sprites;
 
-    BloodAnimation(float x, float y, GameView context) {
+    public BloodAnimation(float x, float y, GameView context) {
         super(x, y, context);
         birthDate = System.currentTimeMillis();
         frameIndex = 0;

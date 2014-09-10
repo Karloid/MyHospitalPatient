@@ -1,8 +1,9 @@
-package com.krld.patient.game;
+package com.krld.patient.game.model;
 
 import android.content.res.*;
 import android.graphics.*;
 import com.krld.patient.*;
+import com.krld.patient.game.Utils;
 
 import java.util.*;
 
@@ -19,7 +20,7 @@ public class Background {
 
     private int ySize;
 
-    Background(float width, float height) {
+    public Background(float width, float height) {
         this.width = width;
         this.height = height;
         xSize = (int) width / tileSize + 1;

@@ -1,9 +1,12 @@
-package com.krld.patient.game;
+package com.krld.patient.game.model.bullets;
 
 import android.content.res.*;
 import android.graphics.*;
-import android.graphics.BitmapFactory.*;
 import com.krld.patient.R;
+import com.krld.patient.game.GameView;
+import com.krld.patient.game.Utils;
+import com.krld.patient.game.model.Unit;
+import com.krld.patient.game.model.animations.BloodAnimation;
 
 public class Needle extends Bullet {
 
@@ -17,7 +20,7 @@ public class Needle extends Bullet {
     public static Bitmap sprite;
 
     long birthDate;
-    static long lifeTime = 10000;
+    public static long lifeTime = 10000;
 
     private static final float TOUCH_RANGE = 30;
 
@@ -28,7 +31,7 @@ public class Needle extends Bullet {
         speed = 26;
     }
 
-    Needle(float x, float y
+    public Needle(float x, float y
             , GameView context, Unit target) {
         this(x, y, context, target.x, target.y);
     }

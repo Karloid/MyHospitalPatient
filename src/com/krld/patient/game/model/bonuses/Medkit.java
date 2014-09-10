@@ -1,15 +1,18 @@
-package com.krld.patient.game;
+package com.krld.patient.game.model.bonuses;
 
 import android.content.res.*;
 import android.graphics.*;
-import android.graphics.BitmapFactory.*;
 import com.krld.patient.R;
+import com.krld.patient.game.GameView;
+import com.krld.patient.game.Utils;
+import com.krld.patient.game.model.Player;
+import com.krld.patient.game.model.bonuses.Bonus;
 
 public class Medkit extends Bonus {
     float value = 15;
     public static Bitmap sprite;
 
-    Medkit(float x, float y, GameView context) {
+    public Medkit(float x, float y, GameView context) {
         super(x, y, context);
     }
 

@@ -7,10 +7,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 import com.krld.patient.R;
+import com.krld.patient.game.model.Background;
+import com.krld.patient.game.model.Player;
 
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import static com.krld.patient.game.UIConstants.*;

@@ -1,32 +1,35 @@
-package com.krld.patient.game;
+package com.krld.patient.game.model;
 
 import android.content.res.*;
 import android.graphics.*;
+import com.krld.patient.game.Drawable;
+import com.krld.patient.game.GameView;
+import com.krld.patient.game.model.bonuses.Bonus;
 
 import java.util.*;
 
 public abstract class Unit implements Drawable {
 
-    float x;
+    public float x;
 
-    float y;
+    public float y;
 
-    Float moveX;
-    Float moveY;
+    protected Float moveX;
+    protected Float moveY;
 
-    float speed;
+    public float speed;
 
-    int size;
-    int hp;
-    int maxHp;
+    public int size;
+    public int hp;
+    public int maxHp;
 
-    GameView context;
+    public GameView context;
 
     private static final float PICK_RANGE = 50;
 
     private static final int DECAY_DMG = 1;
 
-    Unit(float x, float y, GameView context) {
+    public Unit(float x, float y, GameView context) {
         this.x = x;
         this.y = y;
         this.context = context;

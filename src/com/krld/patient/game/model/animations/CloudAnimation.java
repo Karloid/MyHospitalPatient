@@ -1,9 +1,12 @@
-package com.krld.patient.game;
+package com.krld.patient.game.model.animations;
 
 
 import android.content.res.*;
 import android.graphics.*;
 import com.krld.patient.*;
+import com.krld.patient.game.GameView;
+import com.krld.patient.game.Utils;
+
 import java.util.*;
 
 public class CloudAnimation extends Animation
@@ -26,7 +29,7 @@ public class CloudAnimation extends Animation
 
     public static List<Bitmap> sprites;
 
-	CloudAnimation(float x, float y, GameView context)
+	public CloudAnimation(float x, float y, GameView context)
 	{
 		super(x, y, context);
 		birthDate = System.currentTimeMillis();

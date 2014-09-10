@@ -3,7 +3,7 @@ package com.krld.patient.game;
 import android.graphics.*;
 import android.content.res.*;
 import android.graphics.BitmapFactory.*;
-import com.krld.patient.R;
+import com.krld.patient.game.model.Unit;
 
 public class Utils {
 
@@ -37,8 +37,6 @@ public class Utils {
 
     public static double getDistance(Unit unit1, Unit unit2) {
         return getDistance(unit1.x, unit1.y, unit2.x, unit2.y);
-        //	return 0;
-
     }
 
     public static double getDistance(float x1, float y1, float x2, float y2) {

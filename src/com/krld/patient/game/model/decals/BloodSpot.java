@@ -1,9 +1,10 @@
-package com.krld.patient.game;
+package com.krld.patient.game.model.decals;
 
 import android.content.res.*;
 import android.graphics.*;
-import android.graphics.BitmapFactory.*;
 import com.krld.patient.R;
+import com.krld.patient.game.GameView;
+import com.krld.patient.game.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class BloodSpot extends Decal {
     private static Bitmap sprite4;
     private float rotare;
 
-    BloodSpot(float x, float y, GameView context) {
+    public BloodSpot(float x, float y, GameView context) {
         super(x, y, context);
         type = (byte) (Math.random() * 5);
         rotare = Math.round(360 * Math.random());

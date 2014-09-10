@@ -1,11 +1,12 @@
-package com.krld.patient.game;
+package com.krld.patient.game.model.effects;
 
 import android.graphics.*;
+import com.krld.patient.game.model.Unit;
 
 public class ShieldEffect extends Effect {
 
 
-    ShieldEffect(Unit owner) {
+    public ShieldEffect(Unit owner) {
         super(owner);
     }
 

@@ -1,9 +1,12 @@
-package com.krld.patient.game;
+package com.krld.patient.game.model.bullets;
 
 import android.content.res.*;
 import android.graphics.*;
-import android.graphics.BitmapFactory.*;
 import com.krld.patient.R;
+import com.krld.patient.game.GameView;
+import com.krld.patient.game.Utils;
+import com.krld.patient.game.model.Unit;
+import com.krld.patient.game.model.animations.BloodAnimation;
 
 public class Note extends Bullet {
 
@@ -28,7 +31,7 @@ public class Note extends Bullet {
         speed = 26;
     }
 
-    Note(float x, float y
+    public Note(float x, float y
             , GameView context, Unit target) {
         super(x, y, context);
         speed = 26;

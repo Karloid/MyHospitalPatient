@@ -1,14 +1,17 @@
-package com.krld.patient.game;
+package com.krld.patient.game.model.bonuses;
 
 import android.content.res.*;
 import android.graphics.*;
-import android.graphics.BitmapFactory.*;
 import com.krld.patient.R;
+import com.krld.patient.game.GameView;
+import com.krld.patient.game.Utils;
+import com.krld.patient.game.model.effects.BombEffect;
+import com.krld.patient.game.model.Player;
 
 public class BombBonus extends Bonus {
     public static Bitmap sprite;
 
-    BombBonus(float x, float y, GameView context) {
+    public BombBonus(float x, float y, GameView context) {
         super(x, y, context);
     }
 
