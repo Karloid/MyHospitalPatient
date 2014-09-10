@@ -5,7 +5,7 @@ import android.graphics.*;
 
 import java.util.*;
 
-public abstract class Unit {
+public abstract class Unit implements Drawable {
 
     float x;
 
@@ -39,7 +39,6 @@ public abstract class Unit {
     public void draw(Canvas canvas, Paint paint) {
         paint.setColor(Color.RED);
         canvas.drawRect(x - size / 2, y - size / 2, x + size / 2, y + size / 2, paint);
-
     }
 
     public void moveTo(float x, float y) {

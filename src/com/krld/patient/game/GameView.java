@@ -14,13 +14,13 @@ import static com.krld.patient.game.UIConstants.*;
 
 public class GameView extends View {
     public static final float WIDTH_BASIS = 540f;
-    public static final String BEST_TEXT = "BEST: ";
-    private static final String TAG = "PLOG";
+    static final String TAG = "PLOG";
     public static final int DEFAULT_SCALE_FACTOR = 6;
     public static final int DEFAULT_SCALE_FACTOR_FOR_BONUS = 4;
     public static final int NURSE_SPAWN_COOLDOWN = 6000;
     private static final String BEST_SCORE_KEY = "BEST_SCORE_KEY";
-    public static final String SCORE_TEXT = "SCORE: ";
+    public static final int TIME_BETWEEN_TICKS = 100;
+
     public Player player;
 
     public List<Bonus> bonuses;
@@ -31,11 +31,7 @@ public class GameView extends View {
 
     public int score;
 
-    Bitmap heartBitmap;
-
     private boolean gameOver;
-
-    private Bitmap gameOverSprite;
 
     private Thread runner;
 
@@ -52,51 +48,67 @@ public class GameView extends View {
     private boolean firstRun = true;
     private float gameHeight;
     private int bestScore;
-    private boolean textInGameOverInited = false;
-    private TextDrawValues textDrawValues;
+
+    private GameRenderer gameRenderer;
+    private long tick;
+    private List<Drawable> drawDecals;
+    private List<Drawable> drawBonuses;
+    private List<Drawable> drawCreeps;
+    private List<Drawable> drawBullets;
+    private List<Drawable> drawAnimations;
 
 
     public GameView(Context context) {
         super(context);
         setOnTouchListener(new MyOnTouchListener());
+        gameRenderer = new GameRenderer(this);
     }
 
     private void initGame() {
         Log.i(TAG, "INIT");
         debugMessage = "";
         score = 0;
+        tick = 0;
         loadBestScore();
 
         background = new Background(WIDTH_BASIS, gameHeight);
-        final GameView game = this;
+        gameRenderer.setBackground(background);
         gameOver = false;
         player = new Player(WIDTH_BASIS / 2, gameHeight / 2, this);
-        bonuses = new ArrayList<Bonus>();
-        creeps = new ArrayList<Creep>();
+        bonuses = new LinkedList<Bonus>();
+        creeps = new LinkedList<Creep>();
         nurseSpawnCoolDown = NURSE_SPAWN_COOLDOWN;
-        bullets = new ArrayList<Bullet>();
-        decals = new ArrayList<Decal>();
-        animations = new ArrayList<Animation>();
+        bullets = new LinkedList<Bullet>();
+        decals = new LinkedList<Decal>();
+        animations = new LinkedList<Animation>();
         //	final MediaPlayer mp = MediaPlayer.create(context, R.raw.s1);
+        createAndStartRunner();
+    }
+
+    private void createAndStartRunner() {
         runner = new Thread(new Runnable() {
             public void run() {
-                while (true) {
-                    if (game.gameOver)
-                        return;
-                    game.update();
-                    game.postInvalidate();
-                    if (game.gameOver)
-                        return;
-                    try {
-                        Thread.sleep(100);
-                    } catch (Exception e) {
-                        return;
-                    }
-                }
+                updateLoop();
             }
         }
         );
         runner.start();
+    }
+
+    private void updateLoop() {
+        while (true) {
+            if (this.gameOver)
+                return;
+            this.update();
+            this.postInvalidate();
+            if (this.gameOver)
+                return;
+            try {
+                Thread.sleep(TIME_BETWEEN_TICKS);
+            } catch (InterruptedException e) {
+                return;
+            }
+        }
     }
 
     private void loadBestScore() {
@@ -120,49 +132,19 @@ public class GameView extends View {
         Background.init(getResources());
         CloudAnimation.init(getResources());
 
-        heartBitmap = Utils.loadSprite(R.raw.heart, getResources());
-        gameOverSprite = Utils.loadSprite(R.raw.gameover, getResources(), 20);
+        gameRenderer.init(getResources());
     }
 
     @Override
     public void onDraw(Canvas canvas) {
         fitCanvas(canvas);
-        Paint paint = new Paint();
-        drawBackground(paint, canvas);
-        try {
-            drawEntitys(canvas, paint);
-        } catch (Exception e) {
-            Log.e(TAG, "" + e.getMessage() + " " + e.getCause());
-            e.printStackTrace();
-            debugMessage = Utils.getExceptionContent(e);
-        }
-        drawUI(canvas, paint);
-        drawMisc(canvas, paint);
+        gameRenderer.draw(canvas);
     }
 
     private void init() {
         initSprites();
         initGame();
         firstRun = false;
-    }
-
-    private void drawMisc(Canvas canvas, Paint paint) {
-        paint.setColor(Color.rgb(100, 10, 88));
-        paint.setStrokeWidth(40);
-        for (int y = 0, alpha = 130; alpha > 2; alpha -= 15, y
-                += 40) {
-            paint.setAlpha(alpha);
-            canvas.drawLine(0, y, 550, y, paint);
-            if (y > 960) break;
-        }
-        paint.setAlpha(255);
-
-        paint.setColor(Color.BLACK);
-        canvas.drawText(debugMessage, 20, 20, paint);
-    }
-
-    private void drawBackground(Paint paint, Canvas canvas) {
-        background.draw(canvas, paint);
     }
 
     private void fitCanvas(Canvas canvas) {
@@ -176,38 +158,29 @@ public class GameView extends View {
             canvas.scale(canvasScale, canvasScale);
     }
 
-    private void drawEntitys(Canvas canvas, Paint paint) {
-        for (Decal decal : decals) {
-            decal.draw(canvas, paint);
-        }
-        for (Bonus bonus : bonuses) {
-            bonus.draw(canvas, paint);
-        }
-        for (Creep creep : creeps) {
-            creep.draw(canvas, paint);
-        }
-        for (Bullet needle : bullets) {
-            needle.draw(canvas, paint);
-        }
-        drawPlayer(canvas, paint);
-        for (Animation anim : animations) {
-            anim.draw(canvas, paint);
-        }
-
-    }
 
     private void update() {
         try {
             if (gameOver)
                 return;
+            tick++;
             gameContentUpdate();
             moveUnits();
             player.move();
             player.collect();
+            updateDrawCollections();
             checkGameOver();
         } catch (Exception e) {
             debugMessage = Utils.getExceptionContent(e);
         }
+    }
+
+    private void updateDrawCollections() {
+        drawDecals = new LinkedList<Drawable>(decals);
+        drawBonuses = new LinkedList<Drawable>(bonuses);
+        drawCreeps = new LinkedList<Drawable>(creeps);
+        drawBullets = new LinkedList<Drawable>(bullets);
+        drawAnimations = new LinkedList<Drawable>(animations);
     }
 
     private void gameContentUpdate() {
@@ -294,84 +267,65 @@ public class GameView extends View {
                     (float) (20 + Math.random() * 690), this));
     }
 
-    private void drawUI(Canvas canvas, Paint paint) {
-        drawHp(canvas, paint);
-        drawLives(canvas, paint);
-        drawScores(canvas, paint);
-        if (gameOver) {
-            paint.setColor(Color.BLACK);
-            canvas.drawRect(0, 0, WIDTH_BASIS, gameHeight, paint);
-            canvas.drawBitmap(gameOverSprite, (WIDTH_BASIS) / 2 - gameOverSprite.getWidth() / 2, 20, paint);
-            drawGameOverScores(canvas, paint);
+    public List<Decal> getDecals() {
+        return decals;
+    }
+
+    public List<Bonus> getBonuses() {
+        return bonuses;
+    }
+
+    public List<Creep> getCreeps() {
+        return creeps;
+    }
+
+    public List<Bullet> getBullets() {
+        return bullets;
+    }
+
+    public List<Animation> getAnimations() {
+        return animations;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public float getGameHeight() {
+        return gameHeight;
+    }
+
+    public float getGameWidth() {
+        return WIDTH_BASIS;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public int getBestScore() {
+        return bestScore;
+    }
+
+    public void onPause() {
+        runner.interrupt();
+        try {
+            runner.join();
+            Log.i(TAG, "Runner has terminated");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
-    private void drawGameOverScores(Canvas canvas, Paint paint) {
-        paint.setAntiAlias(true);
-        paint.setColor(Color.WHITE);
-        paint.setTextSize(50);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(4);
-        if (!textInGameOverInited) {
-            textDrawValues = new TextDrawValues();
-            textInGameOverInited = true;
+    public void onResume() {
+        if (runner != null && !runner.isAlive()) {
+            createAndStartRunner();
+            Log.i(TAG, "Runner has started");
         }
-        float textWidthScore = paint.measureText(SCORE_TEXT );
-        float leftScore = WIDTH_BASIS / 2 - textWidthScore / 1;
-        float textWidthBest = paint.measureText(BEST_TEXT );
-        float leftBest = WIDTH_BASIS / 2 - textWidthBest / 1;
-
-        float top = (gameHeight / 5) * 4;
-        textDrawValues.setLeftScore(leftScore);
-        textDrawValues.setLeftBest(leftBest);
-        textDrawValues.setTop(top);
-
-
-        canvas.drawText(SCORE_TEXT + String.valueOf(score), textDrawValues.getLeftScore(), textDrawValues.getTop(), paint);
-        canvas.drawText(BEST_TEXT + String.valueOf(bestScore), textDrawValues.getLeftBest(), textDrawValues.getTop() + SCORE_TOP_MARGIN * 1.3f, paint);
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.RED);
-        canvas.drawText(SCORE_TEXT + String.valueOf(score), textDrawValues.getLeftScore(), textDrawValues.getTop(), paint);
-        canvas.drawText(BEST_TEXT + String.valueOf(bestScore), textDrawValues.getLeftBest(), textDrawValues.getTop() + SCORE_TOP_MARGIN * 1.3f, paint);
-        paint.setAntiAlias(false);
-    }
-
-    private void drawScores(Canvas canvas, Paint paint) {
-        // Typeface typeFace = Typeface.create("Roboto", Typeface.BOLD);
-        //  paint.setTypeface(typeFace);
-        paint.setAntiAlias(true);
-        paint.setColor(Color.WHITE);
-        paint.setTextSize(40);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(3);
-        canvas.drawText(SCORE_TEXT + String.valueOf(score), SCORE_LEFT_MARGIN, SCORE_TOP_MARGIN, paint);
-        canvas.drawText(BEST_TEXT + String.valueOf(bestScore), SCORE_LEFT_MARGIN, SCORE_TOP_MARGIN * 2, paint);
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.RED);
-        canvas.drawText(SCORE_TEXT + String.valueOf(score), SCORE_LEFT_MARGIN, SCORE_TOP_MARGIN, paint);
-        canvas.drawText(BEST_TEXT + String.valueOf(bestScore), SCORE_LEFT_MARGIN, SCORE_TOP_MARGIN * 2, paint);
-        paint.setAntiAlias(false);
-    }
-
-    private void drawLives(Canvas canvas, Paint paint) {
-        float top = gameHeight - HP_BAR_MARGIN - heartBitmap.getHeight();
-        for (int i = 0; i < player.lives; i++) {
-            canvas.drawBitmap(heartBitmap, HP_BAR_MARGIN * 2 + HP_BAR_WIDTH + i * (heartBitmap.getWidth() + heartBitmap.getWidth() / 4), top, paint);
-        }
-    }
-
-    private void drawHp(Canvas canvas, Paint paint) {
-        float hpStart = gameHeight - HP_BAR_MARGIN;
-        float hpEnd = hpStart - HP_BAR_HEIGHT;
-        paint.setColor(Color.rgb(55, 0, 0));
-        canvas.drawRect(HP_BAR_MARGIN, hpEnd, HP_BAR_WIDTH, hpStart, paint);
-        paint.setColor(Color.RED);
-        float multiplayer = player.hp / (player.maxHp * 1f);
-        canvas.drawRect(HP_BAR_MARGIN, hpStart - (hpStart - hpEnd) * multiplayer, HP_BAR_WIDTH, hpStart, paint);
-    }
-
-    private void drawPlayer(Canvas canvas, Paint paint) {
-        player.draw(canvas, paint);
     }
 
     private class MyOnTouchListener implements OnTouchListener {
@@ -387,5 +341,25 @@ public class GameView extends View {
             }
             return true;
         }
+    }
+
+    public List<Drawable> getDrawDecals() {
+        return drawDecals;
+    }
+
+    public List<Drawable> getDrawBonuses() {
+        return drawBonuses;
+    }
+
+    public List<Drawable> getDrawCreeps() {
+        return drawCreeps;
+    }
+
+    public List<Drawable> getDrawBullets() {
+        return drawBullets;
+    }
+
+    public List<Drawable> getDrawAnimations() {
+        return drawAnimations;
     }
 }
