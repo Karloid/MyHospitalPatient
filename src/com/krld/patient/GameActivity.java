@@ -7,29 +7,57 @@ import android.widget.*;
 import com.krld.patient.game.GameView;
 
 public class GameActivity extends Activity {
-    private GameView gameView;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.main);
-        gameView = new GameView(this);
-        LinearLayout layout = (LinearLayout) findViewById(R.id.layout);
-        layout.addView(gameView);
-    }
+	private LinearLayout mLayout;
+	private MenuView mMenuView;
+	private GameView mGameView;
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (gameView != null)
-            gameView.onPause();
-    }
+	private View mActiveView;
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (gameView != null)
-            gameView.onResume();
-    }
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		setContentView(R.layout.main);
+
+		mGameView = new GameView(this);
+		mMenuView = new MenuView(this);
+		mLayout = (LinearLayout) findViewById(R.id.layout);
+		show(mMenuView);
+	}
+
+	private void show(View view) {
+		mLayout.removeAllViews();
+		mLayout.addView(view);
+		mActiveView = view;
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (mActiveView != null)
+			((ActiveView) mActiveView).onPause();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (mGameView != null)
+			((ActiveView) mActiveView).onResume();
+	}
+
+	public void showGame() {
+		show(mGameView);
+		mGameView.onResume();
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (mActiveView instanceof GameView) {
+			mGameView.onPause();
+			show(mMenuView);
+		} else {
+			super.onBackPressed();
+		}
+	}
 }

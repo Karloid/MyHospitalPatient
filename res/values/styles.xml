@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="BaseButton">
+        <item name="android:layout_width">@dimen/button_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/margin_default</item>
+        <item name="android:padding">@dimen/padding_buttons</item>
+        <item name="android:textSize">@dimen/textSize_large</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>

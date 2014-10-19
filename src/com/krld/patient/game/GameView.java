@@ -8,6 +8,8 @@ import android.view.*;
 
 import java.util.*;
 
+import com.krld.patient.ActiveView;
+import com.krld.patient.GameActivity;
 import com.krld.patient.game.model.*;
 import com.krld.patient.game.model.animations.Animation;
 import com.krld.patient.game.model.animations.BloodAnimation;
@@ -23,7 +25,7 @@ import com.krld.patient.game.model.decals.BloodSpot;
 import com.krld.patient.game.model.decals.BombSpot;
 import com.krld.patient.game.model.decals.Decal;
 
-public class GameView extends View {
+public class GameView extends View implements ActiveView {
     public static final float WIDTH_BASIS = 540f;
     static final String TAG = "PLOG";
     public static final int DEFAULT_SCALE_FACTOR = 6;
