@@ -1,16 +1,26 @@
 package com.krld.patient;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
 public class MenuView extends FrameLayout implements ActiveView {
 
+	private static final long BACKGROUND_DRAW_DELAY = 50;
 	private Button mPlay;
 	private Button mRatings;
 	private Button mSettings;
+	private BackgroundView mBackground;
+	private Thread mDrawer;
+	private SurfaceHolder mHolder;
 
 	public MenuView(Context gameActivity) {
 		super(gameActivity);
@@ -31,6 +41,7 @@ public class MenuView extends FrameLayout implements ActiveView {
 	private void init() {
 		inflate(getContext(), R.layout.general_menu, this);
 
+		mBackground = (BackgroundView) findViewById(R.id.generalMenu_background);
 		mPlay = (Button) findViewById(R.id.generalMenu_play);
 		mRatings = (Button) findViewById(R.id.generalMenu_ratings);
 		mSettings = (Button) findViewById(R.id.generalMenu_settings);
@@ -43,6 +54,35 @@ public class MenuView extends FrameLayout implements ActiveView {
 
 
 		});
+
+		setupBackground();
+	}
+
+	private void setupBackground() {
+
+	}
+
+	private void createDrawerThread() {
+		mDrawer = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				drawerLoop();
+			}
+		});
+		mDrawer.start();
+	}
+
+	private void drawerLoop() {
+		try {
+			while (true) {
+				mBackground.update();
+				mBackground.postInvalidate();
+				Thread.sleep(BACKGROUND_DRAW_DELAY);
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	private void showGameView() {
@@ -51,17 +91,18 @@ public class MenuView extends FrameLayout implements ActiveView {
 	}
 
 	@Override
-	protected void onFinishInflate() {
-		super.onFinishInflate();
-	}
-
-	@Override
 	public void onPause() {
-
+		mDrawer.interrupt();
+		try {
+			mDrawer.join();
+			Log.i("", "mDrawer has terminated");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void onResume() {
-
+		createDrawerThread();
 	}
 }

@@ -27,9 +27,13 @@ public class GameActivity extends Activity {
 	}
 
 	private void show(View view) {
+		if (mActiveView != null) {
+			((ActiveView) mActiveView).onPause();
+		}
 		mLayout.removeAllViews();
 		mLayout.addView(view);
 		mActiveView = view;
+		((ActiveView) mActiveView).onResume();
 	}
 
 	@Override
@@ -48,7 +52,6 @@ public class GameActivity extends Activity {
 
 	public void showGame() {
 		show(mGameView);
-		mGameView.onResume();
 	}
 
 	@Override

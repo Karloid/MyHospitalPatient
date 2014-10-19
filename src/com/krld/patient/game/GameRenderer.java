@@ -39,6 +39,7 @@ public class GameRenderer {
     public void draw(Canvas canvas) {
         this.player = gameView.getPlayer();
         Paint paint = new Paint();
+		background.update(gameView.decals);
         drawBackground(paint, canvas);
         try {
             drawEntitys(canvas, paint);
@@ -64,7 +65,7 @@ public class GameRenderer {
     }
 
     private void drawEntitys(Canvas canvas, Paint paint) {
-        drawDrawable(gameView.getDrawDecals(), canvas, paint);
+       // drawDrawable(gameView.getDrawDecals(), canvas, paint);
         drawDrawable(gameView.getDrawBonuses(), canvas, paint);
         drawDrawable(gameView.getDrawCreeps(), canvas, paint);
         drawDrawable(gameView.getDrawBullets(), canvas, paint);

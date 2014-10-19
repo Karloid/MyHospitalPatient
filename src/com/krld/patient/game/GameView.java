@@ -1,5 +1,6 @@
 package com.krld.patient.game;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.*;
 import android.graphics.*;
@@ -25,16 +26,17 @@ import com.krld.patient.game.model.decals.BloodSpot;
 import com.krld.patient.game.model.decals.BombSpot;
 import com.krld.patient.game.model.decals.Decal;
 
-public class GameView extends View implements ActiveView {
+public class GameView extends SurfaceView implements ActiveView {
     public static final float WIDTH_BASIS = 540f;
     static final String TAG = "PLOG";
     public static final int DEFAULT_SCALE_FACTOR = 6;
     public static final int DEFAULT_SCALE_FACTOR_FOR_BONUS = 4;
     public static final int NURSE_SPAWN_COOLDOWN = 6000;
     private static final String BEST_SCORE_KEY = "BEST_SCORE_KEY";
-    public static final int TIME_BETWEEN_TICKS = 100;
+    public static final int TIME_BETWEEN_TICKS = 50;
+	private final SurfaceHolder holder;
 
-    public Player player;
+	public Player player;
 
     public List<Bonus> bonuses;
     public List<Creep> creeps;
@@ -73,6 +75,23 @@ public class GameView extends View implements ActiveView {
 
     public GameView(Context context) {
         super(context);
+		holder = getHolder();
+		holder.addCallback(new SurfaceHolder.Callback() {
+			@Override
+			public void surfaceCreated(SurfaceHolder holder) {
+				updateSurface();
+			}
+
+			@Override
+			public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+			}
+
+			@Override
+			public void surfaceDestroyed(SurfaceHolder holder) {
+
+			}
+		});
         setOnTouchListener(new MyOnTouchListener());
         gameRenderer = new GameRenderer(this);
     }
@@ -109,22 +128,38 @@ public class GameView extends View implements ActiveView {
     }
 
     private void updateLoop() {
-        while (true) {
-            if (this.gameOver)
-                return;
-            this.update();
-            this.postInvalidate();
-            if (this.gameOver)
-                return;
-            try {
-                Thread.sleep(TIME_BETWEEN_TICKS);
+		long time;
+		long delay;
+		while (true) {
+			if (this.gameOver) {
+				return;
+			}
+			this.update();
+			time = System.currentTimeMillis();
+			this.updateSurface();
+			if (this.gameOver) {
+				return;
+			}
+			try {
+				delay = TIME_BETWEEN_TICKS - (System.currentTimeMillis() - time);
+				Thread.sleep((delay < 0 ? 0 : delay));
             } catch (InterruptedException e) {
                 return;
             }
         }
     }
 
-    private void loadBestScore() {
+	@SuppressLint("WrongCall")
+	private void updateSurface() {
+		 if (!holder.getSurface().isValid())  {
+			 return;
+		 }
+		Canvas  canvas = holder.lockCanvas();
+		onDraw(canvas);
+		holder.unlockCanvasAndPost(canvas);
+	}
+
+	private void loadBestScore() {
         SharedPreferences preferences = ((Activity) getContext()).getPreferences(Context.MODE_PRIVATE);
         bestScore = preferences.getInt(BEST_SCORE_KEY, 0);
     }
@@ -189,11 +224,10 @@ public class GameView extends View implements ActiveView {
     }
 
     private void updateDrawCollections() {
-        drawDecals = new LinkedList<Drawable>(decals);
-        drawBonuses = new LinkedList<Drawable>(bonuses);
-        drawCreeps = new LinkedList<Drawable>(creeps);
-        drawBullets = new LinkedList<Drawable>(bullets);
-        drawAnimations = new LinkedList<Drawable>(animations);
+        drawBonuses = new ArrayList<Drawable>(bonuses);
+        drawCreeps = new ArrayList<Drawable>(creeps);
+        drawBullets = new ArrayList<Drawable>(bullets);
+        drawAnimations = new ArrayList<Drawable>(animations);
     }
 
     private void gameContentUpdate() {
@@ -338,7 +372,9 @@ public class GameView extends View implements ActiveView {
         if (runner != null && !runner.isAlive()) {
             createAndStartRunner();
             Log.i(TAG, "Runner has started");
-        }
+        } else {
+			updateSurface();
+		}
     }
 
     public long getTick() {
