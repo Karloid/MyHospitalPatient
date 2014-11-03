@@ -14,7 +14,7 @@ import android.widget.FrameLayout;
 
 public class MenuView extends FrameLayout implements ActiveView {
 
-	private static final long BACKGROUND_DRAW_DELAY = 50;
+	private static final long BACKGROUND_DRAW_DELAY = 10;
 	private Button mPlay;
 	private Button mRatings;
 	private Button mSettings;

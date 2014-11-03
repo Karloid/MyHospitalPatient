@@ -157,13 +157,13 @@ public class BackgroundView extends View implements View.OnTouchListener {
 			}
 		}
 
-		private int getSpeed() {
-			return mHeight / 20;
+		private float getSpeed() {
+			return mHeight / 100f;
 		}
 	}
 
 	private class Rectangle {
-		public int mY;
+		public float mY;
 
 		public Rectangle(int y) {
 			mY = y;
