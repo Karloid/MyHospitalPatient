@@ -88,7 +88,7 @@ public abstract class Unit implements Drawable {
     }
 
     public void damage(float dmg) {
-        hp -= dmg;
+     //   hp -= dmg;
         if (hp < 0)
             hp = 0;
     }
@@ -99,5 +99,10 @@ public abstract class Unit implements Drawable {
 
     public static void init(Resources resources) {
 
+    }
+
+    @Override
+    public Bitmap getBitmap() {
+        return null;
     }
 }

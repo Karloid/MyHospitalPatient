@@ -35,15 +35,6 @@ public class Player extends Unit {
         effects.add(new ShieldEffect(this));
     }
 
-    public void draw(Canvas canvas, Paint paint) {
-        canvas.drawBitmap(sprite, x - sprite.getWidth() / 2, y - sprite.getHeight() / 1.5f, paint);
-        // canvas.drawRect(x - 5, y - 5, x + 5, y + 5, paint);
-        //	canvas.drawText(sprite.getWidth() +" " +(0 - (sprite.getWidth()) / 2), 100,100, paint);
-        for (Effect effect : effects) {
-            effect.draw(canvas, paint);
-        }
-    }
-
     public void move() {
         super.move();
         decay();
@@ -92,5 +83,10 @@ public class Player extends Unit {
         if (dmg > 6)
             context.decals.add(new BloodSpot(x + (float) Math.random() * 80 - 40, y + (float) Math.random() * 80 - 40, context));
         super.damage(dmg);
+    }
+
+    @Override
+    public Bitmap getBitmap() {
+        return sprite;
     }
 }

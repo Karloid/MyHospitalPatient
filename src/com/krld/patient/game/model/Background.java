@@ -85,4 +85,8 @@ public class Background {
 		}
 		drawables.clear();
 	}
+
+	public Bitmap getBitmap() {
+		return mBitmap;
+	}
 }

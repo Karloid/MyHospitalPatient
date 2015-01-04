@@ -10,7 +10,7 @@ import android.view.*;
 import java.util.*;
 
 import com.krld.patient.ActiveView;
-import com.krld.patient.GameActivity;
+import com.krld.patient.game.camera.GameCamera;
 import com.krld.patient.game.model.*;
 import com.krld.patient.game.model.animations.Animation;
 import com.krld.patient.game.model.animations.BloodAnimation;
@@ -27,54 +27,55 @@ import com.krld.patient.game.model.decals.BombSpot;
 import com.krld.patient.game.model.decals.Decal;
 
 public class GameView extends SurfaceView implements ActiveView {
-    public static final float WIDTH_BASIS = 540f;
-    static final String TAG = "PLOG";
-    public static final int DEFAULT_SCALE_FACTOR = 6;
-    public static final int DEFAULT_SCALE_FACTOR_FOR_BONUS = 4;
-    public static final int NURSE_SPAWN_COOLDOWN = 6000;
-    private static final String BEST_SCORE_KEY = "BEST_SCORE_KEY";
-    public static final int TIME_BETWEEN_TICKS = 50;
+	public static final float WIDTH_BASIS = 540f;
+	static final String TAG = "PLOG";
+	public static final int DEFAULT_SCALE_FACTOR = 6;
+	public static final int DEFAULT_SCALE_FACTOR_FOR_BONUS = 4;
+	public static final int NURSE_SPAWN_COOLDOWN = 6000;
+	private static final String BEST_SCORE_KEY = "BEST_SCORE_KEY";
+	public static final int TIME_BETWEEN_TICKS = 50;
 	private final SurfaceHolder holder;
 
 	public Player player;
 
-    public List<Bonus> bonuses;
-    public List<Creep> creeps;
-    public List<Bullet> bullets;
-    public List<Decal> decals;
-    public List<Animation> animations;
+	public List<Bonus> bonuses;
+	public List<Creep> creeps;
+	public List<Bullet> bullets;
+	public List<Decal> decals;
+	public List<Animation> animations;
 
-    public int score;
+	public int score;
 
-    private boolean gameOver;
+	private boolean gameOver;
 
-    private Thread runner;
+	private Thread runner;
 
-    private float canvasScale = 1;
+	private float canvasScale = 1;
 
-    private long lastNurseSpawnTime;
+	private long lastNurseSpawnTime;
 
-    private long nurseSpawnCoolDown;
+	private long nurseSpawnCoolDown;
 
-    public static String debugMessage;
+	public static String debugMessage;
 
-    private Background background;
-    private boolean canvasScaleInited;
-    private boolean firstRun = true;
-    private float gameHeight;
-    private int bestScore;
+	private Background background;
+	private boolean canvasScaleInited;
+	private boolean firstRun = true;
+	private float gameHeight;
+	private int bestScore;
 
-    private GameRenderer gameRenderer;
-    private long tick;
-    private List<Drawable> drawDecals;
-    private List<Drawable> drawBonuses;
-    private List<Drawable> drawCreeps;
-    private List<Drawable> drawBullets;
-    private List<Drawable> drawAnimations;
+	private GameRenderer gameRenderer;
+	private long tick;
+	private List<Drawable> drawDecals;
+	private List<Drawable> drawBonuses;
+	private List<Drawable> drawCreeps;
+	private List<Drawable> drawBullets;
+	private List<Drawable> drawAnimations;
+	private GameCamera camera;
 
 
-    public GameView(Context context) {
-        super(context);
+	public GameView(Context context) {
+		super(context);
 		holder = getHolder();
 		holder.addCallback(new SurfaceHolder.Callback() {
 			@Override
@@ -92,42 +93,42 @@ public class GameView extends SurfaceView implements ActiveView {
 
 			}
 		});
-        setOnTouchListener(new MyOnTouchListener());
-        gameRenderer = new GameRenderer(this);
-    }
+		setOnTouchListener(new MyOnTouchListener());
+		gameRenderer = new GameRenderer(this);
+	}
 
-    private void initGame() {
-        Log.i(TAG, "INIT");
-        debugMessage = "";
-        score = 0;
-        tick = 0;
-        loadBestScore();
+	private void initGame() {
+		Log.i(TAG, "INIT");
+		debugMessage = "";
+		score = 0;
+		tick = 0;
+		loadBestScore();
 
-        background = new Background(WIDTH_BASIS, gameHeight);
-        gameRenderer.setBackground(background);
-        gameOver = false;
-        player = new Player(WIDTH_BASIS / 2, gameHeight / 2, this);
-        bonuses = new LinkedList<Bonus>();
-        creeps = new LinkedList<Creep>();
-        nurseSpawnCoolDown = NURSE_SPAWN_COOLDOWN;
-        bullets = new LinkedList<Bullet>();
-        decals = new LinkedList<Decal>();
-        animations = new LinkedList<Animation>();
-        //	final MediaPlayer mp = MediaPlayer.create(context, R.raw.s1);
-        createAndStartRunner();
-    }
+		background = new Background(WIDTH_BASIS, gameHeight);
+		gameRenderer.setBackground(background);
+		gameOver = false;
+		player = new Player(WIDTH_BASIS / 2, gameHeight / 2, this);
+		bonuses = new LinkedList<Bonus>();
+		creeps = new LinkedList<Creep>();
+		nurseSpawnCoolDown = NURSE_SPAWN_COOLDOWN;
+		bullets = new LinkedList<Bullet>();
+		decals = new LinkedList<Decal>();
+		animations = new LinkedList<Animation>();
+		//	final MediaPlayer mp = MediaPlayer.create(context, R.raw.s1);
+		createAndStartRunner();
+	}
 
-    private void createAndStartRunner() {
-        runner = new Thread(new Runnable() {
-            public void run() {
-                updateLoop();
-            }
-        }
-        );
-        runner.start();
-    }
+	private void createAndStartRunner() {
+		runner = new Thread(new Runnable() {
+			public void run() {
+				updateLoop();
+			}
+		}
+		);
+		runner.start();
+	}
 
-    private void updateLoop() {
+	private void updateLoop() {
 		long time;
 		long delay;
 		while (true) {
@@ -143,276 +144,280 @@ public class GameView extends SurfaceView implements ActiveView {
 			try {
 				delay = TIME_BETWEEN_TICKS - (System.currentTimeMillis() - time);
 				Thread.sleep((delay < 0 ? 0 : delay));
-            } catch (InterruptedException e) {
-                return;
-            }
-        }
-    }
+			} catch (InterruptedException e) {
+				return;
+			}
+		}
+	}
 
 	@SuppressLint("WrongCall")
 	private void updateSurface() {
-		 if (!holder.getSurface().isValid())  {
-			 return;
-		 }
-		Canvas  canvas = holder.lockCanvas();
-		onDraw(canvas);
+		if (!holder.getSurface().isValid()) {
+			return;
+		}
+		Canvas canvas = holder.lockCanvas();
+		drawGame(canvas);
 		holder.unlockCanvasAndPost(canvas);
 	}
 
 	private void loadBestScore() {
-        SharedPreferences preferences = ((Activity) getContext()).getPreferences(Context.MODE_PRIVATE);
-        bestScore = preferences.getInt(BEST_SCORE_KEY, 0);
-    }
+		SharedPreferences preferences = ((Activity) getContext()).getPreferences(Context.MODE_PRIVATE);
+		bestScore = preferences.getInt(BEST_SCORE_KEY, 0);
+	}
 
-    private void initSprites() {
-        Player.init(getResources());
-        Nurse.init(getResources());
-        Medkit.init(getResources());
-        Needle.init(getResources());
-        ShieldBonus.init(getResources());
-        BombBonus.init(getResources());
-        BloodSpot.init(getResources());
-        BombSpot.init(getResources());
-        Doctor.init(getResources());
-        Note.init(getResources());
-        BloodAnimation.init(getResources());
-        SpeedBonus.init(getResources());
-        Background.init(getResources());
-        CloudAnimation.init(getResources());
+	private void initSprites() {
+		Player.init(getResources());
+		Nurse.init(getResources());
+		Medkit.init(getResources());
+		Needle.init(getResources());
+		ShieldBonus.init(getResources());
+		BombBonus.init(getResources());
+		BloodSpot.init(getResources());
+		BombSpot.init(getResources());
+		Doctor.init(getResources());
+		Note.init(getResources());
+		BloodAnimation.init(getResources());
+		SpeedBonus.init(getResources());
+		Background.init(getResources());
+		CloudAnimation.init(getResources());
 
-        gameRenderer.init(getResources());
-    }
+		gameRenderer.init(getResources());
+	}
 
-    @Override
-    public void onDraw(Canvas canvas) {
-        fitCanvas(canvas);
-        gameRenderer.draw(canvas);
-    }
+	public void drawGame(Canvas canvas) {
+		fitCanvas(canvas);
+		camera.setX(player.x - camera.getWidth() / 2);
+		camera.setY(player.y - camera.getHeight() / 2);
+		gameRenderer.draw(canvas, camera);
+	}
 
-    private void init() {
-        initSprites();
-        initGame();
-        firstRun = false;
-    }
+	private void init() {
+		initSprites();
+		initGame();
+		firstRun = false;
+	}
 
-    private void fitCanvas(Canvas canvas) {
-        if (!canvasScaleInited) {
-            canvasScale = canvas.getWidth() / WIDTH_BASIS;
-            canvasScaleInited = true;
-            gameHeight = canvas.getHeight() / canvasScale;
-            init();
-        }
-        if (canvasScale != 1f)
-            canvas.scale(canvasScale, canvasScale);
-    }
+	private void fitCanvas(Canvas canvas) {
+		if (!canvasScaleInited) {
+			canvasScale = canvas.getWidth() / WIDTH_BASIS;
+			canvasScaleInited = true;
+			gameHeight = canvas.getHeight() / canvasScale;
+			camera = new GameCamera();
+			camera.setWidth(WIDTH_BASIS);
+			camera.setHeight(gameHeight);
+			init();
+		}
+		if (canvasScale != 1f)
+			canvas.scale(canvasScale, canvasScale);
+	}
 
 
-    private void update() {
-        try {
-            if (gameOver)
-                return;
-            tick++;
-            gameContentUpdate();
-            moveUnits();
-            player.move();
-            player.collect();
-            updateDrawCollections();
-            checkGameOver();
-        } catch (Exception e) {
-            debugMessage = Utils.getExceptionContent(e);
-        }
-    }
+	private void update() {
+		try {
+			if (gameOver)
+				return;
+			tick++;
+			gameContentUpdate();
+			moveUnits();
+			player.move();
+			player.collect();
+			updateDrawCollections();
+			checkGameOver();
+		} catch (Exception e) {
+			debugMessage = Utils.getExceptionContent(e);
+		}
+	}
 
-    private void updateDrawCollections() {
-        drawBonuses = new ArrayList<Drawable>(bonuses);
-        drawCreeps = new ArrayList<Drawable>(creeps);
-        drawBullets = new ArrayList<Drawable>(bullets);
-        drawAnimations = new ArrayList<Drawable>(animations);
-    }
+	private void updateDrawCollections() {
+		drawBonuses = new ArrayList<Drawable>(bonuses);
+		drawCreeps = new ArrayList<Drawable>(creeps);
+		drawBullets = new ArrayList<Drawable>(bullets);
+		drawAnimations = new ArrayList<Drawable>(animations);
+	}
 
-    private void gameContentUpdate() {
-        spawnBonuses();
-        spawnCreeps();
-    }
+	private void gameContentUpdate() {
+		spawnBonuses();
+		spawnCreeps();
+	}
 
-    private void spawnCreeps() {
-        if (creeps.size() < 50 && System.currentTimeMillis() - lastNurseSpawnTime > nurseSpawnCoolDown) {
-            if (Math.random() > 0.3f) {
-                creeps.add(new Nurse((float) (20 + Math.random() * 500),
-                        (float) (20 + Math.random() * 690), this));
-            } else {
-                creeps.add(new Doctor((float) (20 + Math.random() * 500),
-                        (float) (20 + Math.random() * 690), this));
-            }
+	private void spawnCreeps() {
+		if (creeps.size() < 50 && System.currentTimeMillis() - lastNurseSpawnTime > nurseSpawnCoolDown) {
+			if (Math.random() > 0.3f) {
+				creeps.add(new Nurse((float) (20 + Math.random() * 500),
+						(float) (20 + Math.random() * 690), this));
+			} else {
+				creeps.add(new Doctor((float) (20 + Math.random() * 500),
+						(float) (20 + Math.random() * 690), this));
+			}
 
-            lastNurseSpawnTime = System.currentTimeMillis();
-        }
-    }
+			lastNurseSpawnTime = System.currentTimeMillis();
+		}
+	}
 
-    private void checkGameOver() {
-        if (player.lives == 0) {
-            gameOver = true;
-            if (score > bestScore) {
-                bestScore = score;
-                saveBestScore();
-            }
-        }
-    }
+	private void checkGameOver() {
+		if (player.lives == 0) {
+			gameOver = true;
+			if (score > bestScore) {
+				bestScore = score;
+				saveBestScore();
+			}
+		}
+	}
 
-    private void saveBestScore() {
-        SharedPreferences preferences = ((Activity) getContext()).getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt(BEST_SCORE_KEY, bestScore);
-        editor.commit();
-    }
+	private void saveBestScore() {
+		SharedPreferences preferences = ((Activity) getContext()).getPreferences(Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putInt(BEST_SCORE_KEY, bestScore);
+		editor.commit();
+	}
 
-    private void moveUnits() {
-        List<Creep> creepToRemove = null;
-        for (Creep creep : creeps) {
-            creep.move();
-            if (creep.needRemove()) {
-                if (creepToRemove == null) {
-                    creepToRemove = new ArrayList<Creep>();
-                }
-                creepToRemove.add(creep);
-            }
-        }
+	private void moveUnits() {
+		List<Creep> creepToRemove = null;
+		for (Creep creep : creeps) {
+			creep.move();
+			if (creep.needRemove()) {
+				if (creepToRemove == null) {
+					creepToRemove = new ArrayList<Creep>();
+				}
+				creepToRemove.add(creep);
+			}
+		}
 
-        if (creepToRemove != null) {
-            creeps.removeAll(creepToRemove);
-        }
+		if (creepToRemove != null) {
+			creeps.removeAll(creepToRemove);
+		}
 
-        List<Bullet> bulletsToRemove = new ArrayList<Bullet>();
-        long currentTimeMillis = System.currentTimeMillis();
-        for (Bullet bullet : bullets) {
-            bullet.move();
-            if (bullet.achieveTarget() || bullet.touchPlayer()
-                    || currentTimeMillis - bullet.getBirthDate() > Needle.lifeTime)
-                bulletsToRemove.add(bullet);
-        }
-        for (Bullet bullet : bulletsToRemove) {
-            bullet.postAction();
-        }
-        bullets.removeAll(bulletsToRemove);
-    }
+		List<Bullet> bulletsToRemove = new ArrayList<Bullet>();
+		long currentTimeMillis = System.currentTimeMillis();
+		for (Bullet bullet : bullets) {
+			bullet.move();
+			if (bullet.achieveTarget() || bullet.touchPlayer()
+					|| currentTimeMillis - bullet.getBirthDate() > Needle.lifeTime)
+				bulletsToRemove.add(bullet);
+		}
+		for (Bullet bullet : bulletsToRemove) {
+			bullet.postAction();
+		}
+		bullets.removeAll(bulletsToRemove);
+	}
 
-    private void spawnBonuses() {
-        if (Math.random() < 0.0512f && bonuses.size() < 10)
-            bonuses.add(new Medkit((float) (20 + Math.random() * 500),
-                    (float) (20 + Math.random() * 690), this));
+	private void spawnBonuses() {
+		if (Math.random() < 0.0512f && bonuses.size() < 10)
+			bonuses.add(new Medkit((float) (20 + Math.random() * 500),
+					(float) (20 + Math.random() * 690), this));
 
-        if (Math.random() < 0.0112f && bonuses.size() < 10)
-            bonuses.add(new ShieldBonus((float) (20 + Math.random() * 500),
-                    (float) (20 + Math.random() * 690), this));
+		if (Math.random() < 0.0112f && bonuses.size() < 10)
+			bonuses.add(new ShieldBonus((float) (20 + Math.random() * 500),
+					(float) (20 + Math.random() * 690), this));
 
-        if (Math.random() < 0.0112f && bonuses.size() < 10)
-            bonuses.add(new SpeedBonus((float) (20 + Math.random() * 500),
-                    (float) (20 + Math.random() * 690), this));
+		if (Math.random() < 0.0112f && bonuses.size() < 10)
+			bonuses.add(new SpeedBonus((float) (20 + Math.random() * 500),
+					(float) (20 + Math.random() * 690), this));
 
-        if (Math.random() < 0.0052f * creeps.size() && bonuses.size() < 10)
-            bonuses.add(new BombBonus((float) (20 + Math.random() * 500),
-                    (float) (20 + Math.random() * 690), this));
-    }
+		if (Math.random() < 0.0052f * creeps.size() && bonuses.size() < 10)
+			bonuses.add(new BombBonus((float) (20 + Math.random() * 500),
+					(float) (20 + Math.random() * 690), this));
+	}
 
-    public List<Decal> getDecals() {
-        return decals;
-    }
+	public List<Decal> getDecals() {
+		return decals;
+	}
 
-    public List<Bonus> getBonuses() {
-        return bonuses;
-    }
+	public List<Bonus> getBonuses() {
+		return bonuses;
+	}
 
-    public List<Creep> getCreeps() {
-        return creeps;
-    }
+	public List<Creep> getCreeps() {
+		return creeps;
+	}
 
-    public List<Bullet> getBullets() {
-        return bullets;
-    }
+	public List<Bullet> getBullets() {
+		return bullets;
+	}
 
-    public List<Animation> getAnimations() {
-        return animations;
-    }
+	public List<Animation> getAnimations() {
+		return animations;
+	}
 
-    public Player getPlayer() {
-        return player;
-    }
+	public Player getPlayer() {
+		return player;
+	}
 
-    public boolean isGameOver() {
-        return gameOver;
-    }
+	public boolean isGameOver() {
+		return gameOver;
+	}
 
-    public float getGameHeight() {
-        return gameHeight;
-    }
+	public float getGameHeight() {
+		return gameHeight;
+	}
 
-    public float getGameWidth() {
-        return WIDTH_BASIS;
-    }
+	public float getGameWidth() {
+		return WIDTH_BASIS;
+	}
 
-    public int getScore() {
-        return score;
-    }
+	public int getScore() {
+		return score;
+	}
 
-    public int getBestScore() {
-        return bestScore;
-    }
+	public int getBestScore() {
+		return bestScore;
+	}
 
-    public void onPause() {
-        runner.interrupt();
-        try {
-            runner.join();
-            Log.i(TAG, "Runner has terminated");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+	public void onPause() {
+		runner.interrupt();
+		try {
+			runner.join();
+			Log.i(TAG, "Runner has terminated");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 
-    public void onResume() {
-        if (runner != null && !runner.isAlive()) {
-            createAndStartRunner();
-            Log.i(TAG, "Runner has started");
-        } else {
+	public void onResume() {
+		if (runner != null && !runner.isAlive()) {
+			createAndStartRunner();
+			Log.i(TAG, "Runner has started");
+		} else {
 			updateSurface();
 		}
-    }
+	}
 
-    public long getTick() {
-        return tick;
-    }
+	public long getTick() {
+		return tick;
+	}
 
-    private class MyOnTouchListener implements OnTouchListener {
-        @Override
-        public boolean onTouch(View view, MotionEvent event) {
-            //Log.d(TAG, "Mouse event! " + event.getAction());
-            float x = event.getX() / canvasScale;
-            float y = event.getY() / canvasScale;
-            player.moveTo(x, y);
-            if (gameOver) {
-                gameOver = false;
-                initGame();
-            }
-            return true;
-        }
-    }
+	private class MyOnTouchListener implements OnTouchListener {
+		@Override
+		public boolean onTouch(View view, MotionEvent event) {
+			//Log.d(TAG, "Mouse event! " + event.getAction());
+			float x = event.getX() / canvasScale + camera.getX();
+			float y = event.getY() / canvasScale + camera.getY();
+			player.moveTo(x, y);
+			if (gameOver) {
+				gameOver = false;
+				initGame();
+			}
+			return true;
+		}
+	}
 
-    public List<Drawable> getDrawDecals() {
-        return drawDecals;
-    }
+	public List<Drawable> getDrawDecals() {
+		return drawDecals;
+	}
 
-    public List<Drawable> getDrawBonuses() {
-        return drawBonuses;
-    }
+	public List<Drawable> getDrawBonuses() {
+		return drawBonuses;
+	}
 
-    public List<Drawable> getDrawCreeps() {
-        return drawCreeps;
-    }
+	public List<Drawable> getDrawCreeps() {
+		return drawCreeps;
+	}
 
-    public List<Drawable> getDrawBullets() {
-        return drawBullets;
-    }
+	public List<Drawable> getDrawBullets() {
+		return drawBullets;
+	}
 
-    public List<Drawable> getDrawAnimations() {
-        return drawAnimations;
-    }
+	public List<Drawable> getDrawAnimations() {
+		return drawAnimations;
+	}
 }
