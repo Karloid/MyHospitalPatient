@@ -45,6 +45,11 @@ public class Nurse extends Creep {
         canvas.drawBitmap(sprite, x - sprite.getWidth() / 2, y - sprite.getHeight() / 2, paint);
     }
 
+    @Override
+    public Bitmap getBitmap() {
+        return sprite;
+    }
+
     public void move() {
         super.move();
         attackPlayer();

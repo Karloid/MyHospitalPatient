@@ -66,11 +66,11 @@ public class GameView extends SurfaceView implements ActiveView {
 
 	private GameRenderer gameRenderer;
 	private long tick;
-	private List<Drawable> drawDecals;
-	private List<Drawable> drawBonuses;
-	private List<Drawable> drawCreeps;
-	private List<Drawable> drawBullets;
-	private List<Drawable> drawAnimations;
+	private List<Unit> drawDecals;
+	private List<Unit> drawBonuses;
+	private List<Unit> drawCreeps;
+	private List<Bullet> drawBullets;
+	private List<Unit> drawAnimations;
 	private GameCamera camera;
 
 
@@ -188,7 +188,7 @@ public class GameView extends SurfaceView implements ActiveView {
 		fitCanvas(canvas);
 		camera.setX(player.x - camera.getWidth() / 2);
 		camera.setY(player.y - camera.getHeight() / 2);
-		gameRenderer.draw(canvas, camera);
+		gameRenderer.drawMain(canvas, camera);
 	}
 
 	private void init() {
@@ -229,10 +229,10 @@ public class GameView extends SurfaceView implements ActiveView {
 	}
 
 	private void updateDrawCollections() {
-		drawBonuses = new ArrayList<Drawable>(bonuses);
-		drawCreeps = new ArrayList<Drawable>(creeps);
-		drawBullets = new ArrayList<Drawable>(bullets);
-		drawAnimations = new ArrayList<Drawable>(animations);
+		drawBonuses = new ArrayList<Unit>(bonuses);
+		drawCreeps = new ArrayList<Unit>(creeps);
+		drawBullets = new ArrayList<Bullet>(bullets);
+		drawAnimations = new ArrayList<Unit>(animations);
 	}
 
 	private void gameContentUpdate() {
@@ -268,7 +268,7 @@ public class GameView extends SurfaceView implements ActiveView {
 		SharedPreferences preferences = ((Activity) getContext()).getPreferences(Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putInt(BEST_SCORE_KEY, bestScore);
-		editor.commit();
+		editor.commit();  //TODO
 	}
 
 	private void moveUnits() {
@@ -401,23 +401,23 @@ public class GameView extends SurfaceView implements ActiveView {
 		}
 	}
 
-	public List<Drawable> getDrawDecals() {
+	public List<Unit> getDrawDecals() {
 		return drawDecals;
 	}
 
-	public List<Drawable> getDrawBonuses() {
+	public List<Unit> getDrawBonuses() {
 		return drawBonuses;
 	}
 
-	public List<Drawable> getDrawCreeps() {
+	public List<Unit> getDrawCreeps() {
 		return drawCreeps;
 	}
 
-	public List<Drawable> getDrawBullets() {
+	public List<Bullet> getDrawBullets() {
 		return drawBullets;
 	}
 
-	public List<Drawable> getDrawAnimations() {
+	public List<Unit> getDrawAnimations() {
 		return drawAnimations;
 	}
 }

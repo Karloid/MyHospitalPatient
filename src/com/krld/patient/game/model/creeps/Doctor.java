@@ -5,6 +5,7 @@ import android.graphics.*;
 import com.krld.patient.*;
 import com.krld.patient.game.GameView;
 import com.krld.patient.game.Utils;
+import com.krld.patient.game.camera.GameCamera;
 import com.krld.patient.game.model.bullets.Note;
 
 public class Doctor extends Nurse {
@@ -26,7 +27,7 @@ public class Doctor extends Nurse {
         sprite = Utils.loadSprite(R.raw.doctor, resources);
     }
 
-    public void draw(Canvas canvas, Paint paint) {
+    public void draw(Canvas canvas, Paint paint, GameCamera camera) {
         canvas.drawBitmap(sprite, x - sprite.getWidth() / 2, y - sprite.getHeight() / 2, paint);
     }
 
@@ -36,5 +37,10 @@ public class Doctor extends Nurse {
 
     public double getLaunchChance() {
         return launchNeedleChance;
+    }
+
+    @Override
+    public Bitmap getBitmap() {
+        return sprite;
     }
 }

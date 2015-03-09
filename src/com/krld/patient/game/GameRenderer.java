@@ -10,6 +10,8 @@ import com.krld.patient.R;
 import com.krld.patient.game.camera.GameCamera;
 import com.krld.patient.game.model.Background;
 import com.krld.patient.game.model.Player;
+import com.krld.patient.game.model.Unit;
+import com.krld.patient.game.model.bullets.Bullet;
 import com.krld.patient.game.model.effects.Effect;
 
 import java.util.Iterator;
@@ -39,7 +41,7 @@ public class GameRenderer {
 		this.gameView = gameView;
 	}
 
-	public void draw(Canvas canvas, GameCamera camera) {
+	public void drawMain(Canvas canvas, GameCamera camera) {
 		this.camera = camera;
 		this.player = gameView.getPlayer();
 		Paint paint = new Paint();
@@ -59,7 +61,15 @@ public class GameRenderer {
 	private void drawBackground(Paint paint, Canvas canvas) {
 		int xBackground = 0;
 		int yBackground = 0;
-		canvas.drawBitmap(background.getBitmap(), xBackground - camera.getX(), yBackground - camera.getY(), paint);
+		int size = 6;
+		for (int x = -size / 2; x < size; x++) {
+			for (int y = -size / 2; y < size; y++) {
+				xBackground = x * background.getBitmap().getWidth();
+				yBackground = y * background.getBitmap().getHeight();
+				canvas.drawBitmap(background.getBitmap(), xBackground - camera.getX(), yBackground - camera.getY(), paint);
+			}
+		}
+
 	}
 
 	public void setBackground(Background background) {
@@ -73,28 +83,36 @@ public class GameRenderer {
 	private void drawEntitys(Canvas canvas, Paint paint) {
 		drawDrawable(gameView.getDrawBonuses(), canvas, paint);
 		drawDrawable(gameView.getDrawCreeps(), canvas, paint);
-		drawDrawable(gameView.getDrawBullets(), canvas, paint);
+		drawBullets(gameView.getDrawBullets(), canvas, paint);
 		drawPlayer(canvas, paint);
 		drawDrawable(gameView.getDrawAnimations(), canvas, paint);
 	}
 
-	private void drawDrawable(List<? extends Drawable> drawables, Canvas canvas, Paint paint) {
+	private void drawBullets(List<Bullet> drawBullets, Canvas canvas, Paint paint) {
+	   for (Bullet bullet : drawBullets) {
+		   bullet.draw(canvas, paint, camera);
+	   }
+	}
+
+	private void drawDrawable(List<? extends Unit> drawables, Canvas canvas, Paint paint) {
 		if (drawables == null) {
 			return;
 		}
 		Iterator iter = drawables.iterator();
 		while (iter.hasNext()) {
-			Drawable drawable = (Drawable) iter.next();
-			drawable.draw(canvas, paint);
+			Unit drawable = (Unit) iter.next();
+			Bitmap bitmap = drawable.getBitmap();
+			if (bitmap == null) continue;
+			canvas.drawBitmap(bitmap, drawable.x - camera.getX(), drawable.y - camera.getY(), paint);
 		}
 
 	}
 
 	private void drawPlayer(Canvas canvas, Paint paint) {
 		Bitmap bitmap = player.getBitmap();
-		canvas.drawBitmap(bitmap, camera.getWidth() / 2, camera.getHeight() / 2, paint);
+		canvas.drawBitmap(bitmap, camera.getWidth() / 2 - bitmap.getWidth() / 2, camera.getHeight() / 2 - bitmap.getHeight() / 2, paint);
 		for (Effect effect : player.effects) {
-			effect.draw(canvas, paint);
+			effect.draw(canvas, paint, camera);
 		}
 	}
 

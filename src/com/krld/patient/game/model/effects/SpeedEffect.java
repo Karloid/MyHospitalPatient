@@ -1,6 +1,7 @@
 package com.krld.patient.game.model.effects;
 
 import android.graphics.*;
+import com.krld.patient.game.camera.GameCamera;
 import com.krld.patient.game.model.Player;
 import com.krld.patient.game.model.Unit;
 
@@ -14,7 +15,7 @@ public class SpeedEffect extends Effect {
         positions = new ArrayList<Point>();
     }
 
-    public void draw(Canvas canvas, Paint paint) {
+    public void draw(Canvas canvas, Paint paint, GameCamera camera) {
         int step = 145;
         if (positions.size() != 0)
             step = 155 / positions.size();
@@ -22,7 +23,7 @@ public class SpeedEffect extends Effect {
         for (Point pos : positions) {
             alpha += step;
             paint.setAlpha(alpha);
-            canvas.drawBitmap(Player.sprite, pos.x - Player.sprite.getWidth() / 2, pos.y - Player.sprite.getHeight() / 1.5f, paint);
+            canvas.drawBitmap(Player.sprite, pos.x - Player.sprite.getWidth() / 2 - camera.getX(), pos.y - Player.sprite.getHeight() / 2f  - camera.getY(), paint);
         }
         paint.setAlpha(255);
     }

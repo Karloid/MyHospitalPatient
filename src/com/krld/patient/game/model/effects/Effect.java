@@ -1,6 +1,7 @@
 package com.krld.patient.game.model.effects;
 
 import android.graphics.*;
+import com.krld.patient.game.camera.GameCamera;
 import com.krld.patient.game.model.Unit;
 
 public abstract class Effect {
@@ -8,7 +9,7 @@ public abstract class Effect {
     protected long duration;
     protected Unit owner;
 
-    protected static float yCorrection = -15;
+    protected static float yCorrection = 0;
 
     protected Effect(Unit owner) {
         this.owner = owner;
@@ -22,12 +23,11 @@ public abstract class Effect {
     public void effect() {
     }
 
-    public void draw(Canvas canvas, Paint paint) {
-    }
-
     public boolean checkEffectTime() {
         if (owner.context.getTick() - birthDate > duration) {
             return false;
         } else return true;
     }
+
+    public abstract void draw(Canvas canvas, Paint paint, GameCamera camera);
 }

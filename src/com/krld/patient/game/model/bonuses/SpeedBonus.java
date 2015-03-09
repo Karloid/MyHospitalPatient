@@ -19,6 +19,11 @@ public class SpeedBonus extends Bonus {
         canvas.drawBitmap(sprite, x - sprite.getWidth() / 2, y - sprite.getHeight() / 2, paint);
     }
 
+    @Override
+    public Bitmap getBitmap() {
+        return sprite;
+    }
+
     public static void init(Resources resources) {
         sprite = Utils.loadSprite(R.raw.speedbonus, resources, GameView.DEFAULT_SCALE_FACTOR_FOR_BONUS);
 

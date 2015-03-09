@@ -44,6 +44,11 @@ bitmap =sprite;
 		paint.setAlpha(255);
 	}
 
+	@Override
+	public Bitmap getBitmap() {
+		return null;
+	}
+
 	public static void init(Resources resources)
 	{
 		int scale = 4;

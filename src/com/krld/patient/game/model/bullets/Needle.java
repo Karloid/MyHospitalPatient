@@ -5,6 +5,7 @@ import android.graphics.*;
 import com.krld.patient.R;
 import com.krld.patient.game.GameView;
 import com.krld.patient.game.Utils;
+import com.krld.patient.game.camera.GameCamera;
 import com.krld.patient.game.model.Unit;
 import com.krld.patient.game.model.animations.BloodAnimation;
 
@@ -57,8 +58,13 @@ public class Needle extends Bullet {
     }
 
 
-    public void draw(Canvas canvas, Paint paint) {
-        Utils.drawBitmapRotate(sprite, x, y, Utils.getAngle(deltaX, deltaY) - 90, canvas, paint);
+    public void draw(Canvas canvas, Paint paint, GameCamera camera) {
+        Utils.drawBitmapRotate(sprite, x - camera.getX(), y - camera.getY(), Utils.getAngle(deltaX, deltaY) - 90, canvas, paint);
+    }
+
+    @Override
+    public Bitmap getBitmap() {
+        return sprite;
     }
 
     public static void init(Resources resources) {

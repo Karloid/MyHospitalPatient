@@ -70,7 +70,7 @@ public class Background {
 		}
 		mPaint.setColor(Color.GRAY);
 		mPaint.setAlpha(190);
-		mCanvas.drawRect(0, 0, width, height, mPaint);
+		mCanvas.drawRect(0, 0, xSize * tileSize, ySize * tileSize, mPaint);
 		mPaint.setAlpha(255);
 	}
 
@@ -78,9 +78,8 @@ public class Background {
 		if (drawables == null) {
 			return;
 		}
-		Iterator iter = drawables.iterator();
-		while (iter.hasNext()) {
-			Drawable drawable = (Drawable) iter.next();
+		for (Object drawable1 : drawables) {
+			Drawable drawable = (Drawable) drawable1;
 			drawable.draw(mCanvas, mPaint);
 		}
 		drawables.clear();

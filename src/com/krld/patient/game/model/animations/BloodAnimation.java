@@ -21,7 +21,17 @@ public class BloodAnimation extends Animation {
     }
 
     public Bitmap getFrame() {
-        return sprites.get(getFrameIndex());
+        if (stop) return null;
+        Bitmap result = sprites.get(getFrameIndex());
+        updateFrameIndex();
+        return result;
+    }
+
+    private void updateFrameIndex() {
+        frameIndex++;
+        if (frameIndex > sprites.size() - 1) {
+            stop = true;
+        }
     }
 
     public static List<Bitmap> sprites;
@@ -55,6 +65,11 @@ public class BloodAnimation extends Animation {
         if (frameIndex > sprites.size() - 1) {
             stop = true;
         }
+    }
+
+    @Override
+    public Bitmap getBitmap() {
+        return getFrame();
     }
 
     public boolean checkAlive() {

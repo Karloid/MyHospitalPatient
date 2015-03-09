@@ -42,6 +42,11 @@ public class NoteDummy extends Creep
 	{
 	}
 
+	@Override
+	public Bitmap getBitmap() {
+		return null;
+	}
+
 	public boolean needRemove()
 	{
 		return activated;

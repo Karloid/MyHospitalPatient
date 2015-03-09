@@ -1,6 +1,8 @@
 package com.krld.patient.game.model.effects;
+
 import android.graphics.*;
 import com.krld.patient.game.Utils;
+import com.krld.patient.game.camera.GameCamera;
 import com.krld.patient.game.model.bullets.Bullet;
 import com.krld.patient.game.model.Unit;
 import com.krld.patient.game.model.creeps.Creep;
@@ -8,55 +10,50 @@ import com.krld.patient.game.model.decals.BombSpot;
 
 import java.util.*;
 
-public class BombEffect extends Effect
-{
+public class BombEffect extends Effect {
 	float effectRadius;
-	public BombEffect(Unit owner)
-	{
+
+	public BombEffect(Unit owner) {
 		super(owner);
 		effectRadius = 20;
 		duration = 5;
 		owner.context.decals.add(new BombSpot(owner.x, owner.y, owner.context));
 	}
-	public void draw(Canvas canvas, Paint paint)
-	{
+
+	public void draw(Canvas canvas, Paint paint, GameCamera camera) {
 		paint.setColor(Color.RED);
 		paint.setAlpha(200);
-		canvas.drawCircle(owner.x , owner.y + yCorrection, effectRadius, paint);
-    	paint.setColor(Color.YELLOW);
+		float cx = owner.x - camera.getX();
+		float cy = owner.y + yCorrection - camera.getY();
+		canvas.drawCircle(cx, cy, effectRadius, paint);
+		paint.setColor(Color.YELLOW);
 		paint.setAlpha(88);
-    	canvas.drawCircle(owner.x , owner.y + yCorrection, effectRadius / 5, paint);
+		canvas.drawCircle(cx, cy, effectRadius / 5, paint);
 		paint.setAlpha(255);
 		effectRadius *= 1.5;
 	}
 
-	public void effect()
-	{ 
+	public void effect() {
 
 		List<Unit> unitsToRemove = null;
-		for (Creep creep:owner.context.creeps)
-		{
-			if (Utils.getDistance(owner, creep) < effectRadius)
-			{
+		for (Creep creep : owner.context.creeps) {
+			if (Utils.getDistance(owner, creep) < effectRadius) {
 				if (unitsToRemove == null)
 					unitsToRemove = new ArrayList<Unit>();
-				creep.die();		
+				creep.die();
 				unitsToRemove.add(creep);
 			}
 
 		}
-		if (unitsToRemove != null)
-		{
+		if (unitsToRemove != null) {
 			owner.context.creeps.removeAll(unitsToRemove);
 		}
-		
-			for (Bullet needle:owner.context.bullets)
-			{
-				if (Utils.getDistance(owner, needle) < effectRadius)
-				{
 
-					needle.moveOut(owner);	
-				}
+		for (Bullet needle : owner.context.bullets) {
+			if (Utils.getDistance(owner, needle) < effectRadius) {
+
+				needle.moveOut(owner);
 			}
+		}
 	}
 }

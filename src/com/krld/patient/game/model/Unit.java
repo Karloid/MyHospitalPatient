@@ -4,6 +4,7 @@ import android.content.res.*;
 import android.graphics.*;
 import com.krld.patient.game.Drawable;
 import com.krld.patient.game.GameView;
+import com.krld.patient.game.camera.GameCamera;
 import com.krld.patient.game.model.bonuses.Bonus;
 
 import java.util.*;
@@ -39,6 +40,10 @@ public abstract class Unit implements Drawable {
         hp = maxHp;
     }
 
+    public void draw(Canvas canvas, Paint paint, GameCamera camera) {
+        paint.setColor(Color.RED);
+        canvas.drawRect(x - size / 2 - camera.getX(), y - size / 2 - camera.getY(), x + size / 2, y + size / 2, paint);
+    }
     public void draw(Canvas canvas, Paint paint) {
         paint.setColor(Color.RED);
         canvas.drawRect(x - size / 2, y - size / 2, x + size / 2, y + size / 2, paint);
@@ -101,8 +106,4 @@ public abstract class Unit implements Drawable {
 
     }
 
-    @Override
-    public Bitmap getBitmap() {
-        return null;
-    }
 }

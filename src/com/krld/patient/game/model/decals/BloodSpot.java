@@ -38,6 +38,11 @@ public class BloodSpot extends Decal {
         paint.setAlpha(255);
     }
 
+    @Override
+    public Bitmap getBitmap() {
+        return sprites.get(type);
+    }
+
     public static void init(Resources resources) {
         sprites = new ArrayList<Bitmap>();
         sprites.add(Utils.loadSprite(R.raw.bloodspot, resources, SCALE_FACTOR));
@@ -45,6 +50,7 @@ public class BloodSpot extends Decal {
         sprites.add(Utils.loadSprite(R.raw.bloodspot2, resources, SCALE_FACTOR));
         sprites.add(Utils.loadSprite(R.raw.bloodspot3, resources, SCALE_FACTOR));
         sprites.add(Utils.loadSprite(R.raw.bloodspot4, resources, SCALE_FACTOR));
+
     }
 
 }
