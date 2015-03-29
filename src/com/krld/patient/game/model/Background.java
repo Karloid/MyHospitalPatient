@@ -10,7 +10,22 @@ import com.krld.patient.game.model.decals.Decal;
 import java.util.*;
 
 public class Background {
-	public static List<Bitmap> sprites;
+	public static final int COLUMN_0 = 0;
+	public static final int COLUMN_1 = 1;
+	public static final int COLUMN_2 = 2;
+	public static final int ROW_0 = 0;
+	public static final int ROW_1 = 1;
+	public static final int ROW_2 = 2;
+
+	public static List<Bitmap> mainSprites;
+	private static List<Bitmap> wastelandSprites;
+	private static List<Bitmap> wallVerticalSprites;
+	private static List<Bitmap> wallTCornerLeftSprites;
+	private static List<Bitmap> wallTCornerRightSprites;
+	private static List<Bitmap> wallHorizontalSprites;
+	private static List<Bitmap> wallLCornerLeftSprites;
+	private static List<Bitmap> wallLCornerRightSprites;
+
 	private final float width;
 	private final float height;
 
@@ -24,6 +39,46 @@ public class Background {
 	private Canvas mainCanvas;
 	private Paint mPaint;
 	private Bitmap[][] bitmaps;
+
+	public static void init(Resources resources) {
+		mainSprites = new ArrayList<Bitmap>();
+		int scale = 6;
+		Bitmap bitmap = Utils.loadSprite(R.raw.tile, resources, scale);
+		mainSprites.add(bitmap);
+		mainSprites.add(Utils.loadSprite(R.raw.tile2, resources, scale));
+		mainSprites.add(Utils.loadSprite(R.raw.tile3, resources, scale));
+		mainSprites.add(Utils.loadSprite(R.raw.tile4, resources, scale));
+		mainSprites.add(Utils.loadSprite(R.raw.tile5, resources, scale));
+
+		wastelandSprites = new ArrayList<Bitmap>();
+		wastelandSprites.add(Utils.loadSprite(R.raw.tile_wasteland, resources, scale));
+		wastelandSprites.add(Utils.loadSprite(R.raw.tile_wasteland2, resources, scale));
+		wastelandSprites.add(Utils.loadSprite(R.raw.tile_wasteland3, resources, scale));
+		wastelandSprites.add(Utils.loadSprite(R.raw.tile_wasteland4, resources, scale));
+		wastelandSprites.add(Utils.loadSprite(R.raw.tile_wasteland5, resources, scale));
+		wastelandSprites.add(Utils.loadSprite(R.raw.tile_wasteland6, resources, scale));
+		wastelandSprites.add(Utils.loadSprite(R.raw.tile_wasteland7, resources, scale));
+
+		wallVerticalSprites = new ArrayList<Bitmap>();
+		wallVerticalSprites.add(Utils.loadSprite(R.raw.tile_wall_vertical, resources, scale));
+
+		wallHorizontalSprites = new ArrayList<Bitmap>();
+		wallHorizontalSprites.add(Utils.loadSprite(R.raw.tile_wall_horizontal, resources, scale));
+
+		wallTCornerLeftSprites = new ArrayList<Bitmap>();
+		wallTCornerLeftSprites.add(Utils.loadSprite(R.raw.tile_wall_t_corner, resources, scale));
+
+		wallTCornerRightSprites = new ArrayList<Bitmap>();
+		wallTCornerRightSprites.add(Utils.loadSprite(R.raw.tile_wall_t_corner_right, resources, scale));
+
+		wallLCornerLeftSprites = new ArrayList<Bitmap>();
+		wallLCornerLeftSprites.add(Utils.loadSprite(R.raw.tile_wall_l_corner_left, resources, scale));
+
+		wallLCornerRightSprites = new ArrayList<Bitmap>();
+		wallLCornerRightSprites.add(Utils.loadSprite(R.raw.tile_wall_l_corner_right, resources, scale));
+
+		tileSize = (short) (mainSprites.get(0).getWidth());
+	}
 
 	public Background(float width, float height) {
 		this.width = width;
@@ -39,7 +94,7 @@ public class Background {
 				if (y == 1 && x == 1) {
 					newBitmap = createMainBitmap();
 				} else {
-				   newBitmap = createEnivormentBitmaps(x, y);
+					newBitmap = createWastelandsBitmaps(x, y);
 				}
 				bitmaps[x][y] = newBitmap;
 			}
@@ -57,32 +112,88 @@ public class Background {
 		}
 	}
 
-	private Bitmap createEnivormentBitmaps(int globalX, int globalY) {
+
+	private Bitmap createWastelandsBitmaps(int globalX, int globalY) {
 
 		Bitmap bitmap = Bitmap.createBitmap(xSize * tileSize, ySize * tileSize, Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmap);
 		canvas.drawColor(Color.GRAY);
 		mPaint = new Paint();
-		for (int x = 0; x < xSize; x++) {
-			for (int y = 0; y < ySize; y++) {
-				canvas.drawBitmap(sprites.get(tileMap[0][0]), x * tileSize, y * tileSize, mPaint);
+
+		int maxX = xSize - 1;
+		int maxY = ySize - 1;
+
+		for (int x = 0; x <= maxX; x++) {
+			for (int y = 0; y <= maxY; y++) {
+				canvas.drawBitmap(wastelandSprites.get(randomIndex(wastelandSprites)), x * tileSize, y * tileSize, mPaint);
+				switch (globalX) {
+					case COLUMN_0:
+						switch (globalY) {
+							case ROW_0:
+								if (x == maxX) {
+									canvas.drawBitmap(wallVerticalSprites.get(randomIndex(wallVerticalSprites)), x * tileSize, y * tileSize, mPaint);
+									if (y == maxY) {
+										canvas.drawBitmap(wallTCornerLeftSprites.get(randomIndex(wallTCornerLeftSprites)), x * tileSize, y * tileSize, mPaint);
+									}
+								}
+								break;
+							case ROW_1:
+								if (x == maxX)
+									canvas.drawBitmap(wallVerticalSprites.get(randomIndex(wallVerticalSprites)), x * tileSize, y * tileSize, mPaint);
+								break;
+							case ROW_2:
+								if (x == maxX && y == 0) {
+									canvas.drawBitmap(wallLCornerLeftSprites.get(randomIndex(wallLCornerLeftSprites)), x * tileSize, y * tileSize, mPaint);
+								}
+								break;
+						}
+						break;
+					case COLUMN_1:
+						switch (globalY) {
+							case ROW_0:
+								canvas.drawBitmap(mainSprites.get(randomIndex(mainSprites)), x * tileSize, y * tileSize, mPaint);
+								if (y == maxY) {
+									canvas.drawBitmap(wallHorizontalSprites.get(randomIndex(wallHorizontalSprites)), x * tileSize, y * tileSize, mPaint);
+								}
+								break;
+							case ROW_2:
+								if (y == 0) {
+									canvas.drawBitmap(wallHorizontalSprites.get(randomIndex(wallHorizontalSprites)), x * tileSize, y * tileSize, mPaint);
+								}
+								break;
+						}
+						break;
+					case COLUMN_2:
+						switch (globalY) {
+							case ROW_0:
+								if (x == 0) {
+									canvas.drawBitmap(wallVerticalSprites.get(randomIndex(wallVerticalSprites)), x * tileSize, y * tileSize, mPaint);
+									if (y == maxY) {
+										canvas.drawBitmap(wallTCornerRightSprites.get(randomIndex(wallTCornerRightSprites)), x * tileSize, y * tileSize, mPaint);
+									}
+								}
+								break;
+							case ROW_1:
+								if (x == 0) {
+									canvas.drawBitmap(wallVerticalSprites.get(randomIndex(wallVerticalSprites)), x * tileSize, y * tileSize, mPaint);
+								}
+								break;
+							case ROW_2:
+								if (x == y && y == 0) {
+									canvas.drawBitmap(wallLCornerRightSprites.get(randomIndex(wallLCornerRightSprites)), x * tileSize, y * tileSize, mPaint);
+								}
+								break;
+						}
+						break;
+				}
 			}
 		}
 		drawDimmedRect(canvas);
 		return bitmap;
 	}
 
-
-	public static void init(Resources resources) {
-		sprites = new ArrayList<Bitmap>();
-		int scale = 6;
-		Bitmap bitmap = Utils.loadSprite(R.raw.tile, resources, scale);
-		sprites.add(bitmap);
-		sprites.add(Utils.loadSprite(R.raw.tile2, resources, scale));
-		sprites.add(Utils.loadSprite(R.raw.tile3, resources, scale));
-		sprites.add(Utils.loadSprite(R.raw.tile4, resources, scale));
-		sprites.add(Utils.loadSprite(R.raw.tile5, resources, scale));
-		tileSize = (short) (sprites.get(0).getWidth());
+	private int randomIndex(List<Bitmap> list) {
+		return (int) (list.size() * Math.random());
 	}
 
 	private Bitmap createMainBitmap() {
@@ -93,7 +204,7 @@ public class Background {
 		mPaint = new Paint();
 		for (int x = 0; x < xSize; x++) {
 			for (int y = 0; y < ySize; y++) {
-				mainCanvas.drawBitmap(sprites.get(tileMap[x][y]), x * tileSize, y * tileSize, mPaint);
+				mainCanvas.drawBitmap(mainSprites.get(tileMap[x][y]), x * tileSize, y * tileSize, mPaint);
 			}
 		}
 		drawDimmedRect(mainCanvas);
