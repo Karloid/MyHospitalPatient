@@ -21,15 +21,32 @@ public class Background {
 	private int xSize;
 
 	private int ySize;
-	private Bitmap mBitmap;
-	private Canvas mCanvas;
+	private Canvas mainCanvas;
 	private Paint mPaint;
+	private Bitmap[][] bitmaps;
 
 	public Background(float width, float height) {
 		this.width = width;
 		this.height = height;
 		xSize = (int) width / tileSize + 1;
 		ySize = (int) height / tileSize + 1;
+		generateTileMap();
+
+		bitmaps = new Bitmap[3][3];
+		for (int x = 0; x <= 2; x++) {
+			for (int y = 0; y <= 2; y++) {
+				Bitmap newBitmap = null;
+				if (y == 1 && x == 1) {
+					newBitmap = createMainBitmap();
+				} else {
+				   newBitmap = createEnivormentBitmaps(x, y);
+				}
+				bitmaps[x][y] = newBitmap;
+			}
+		}
+	}
+
+	private void generateTileMap() {
 		tileMap = new byte[xSize][ySize];
 		for (int x = 0; x < xSize; x++) {
 			for (int y = 0; y < ySize; y++) {
@@ -38,12 +55,23 @@ public class Background {
 					tileMap[x][y] = (byte) (Math.random() * 5);
 			}
 		}
-		createBitmap();
 	}
 
-	public void draw(Canvas canvas, Paint paint) {
-		canvas.drawBitmap(mBitmap, 0, 0, paint);
+	private Bitmap createEnivormentBitmaps(int globalX, int globalY) {
+
+		Bitmap bitmap = Bitmap.createBitmap(xSize * tileSize, ySize * tileSize, Bitmap.Config.ARGB_8888);
+		Canvas canvas = new Canvas(bitmap);
+		canvas.drawColor(Color.GRAY);
+		mPaint = new Paint();
+		for (int x = 0; x < xSize; x++) {
+			for (int y = 0; y < ySize; y++) {
+				canvas.drawBitmap(sprites.get(tileMap[0][0]), x * tileSize, y * tileSize, mPaint);
+			}
+		}
+		drawDimmedRect(canvas);
+		return bitmap;
 	}
+
 
 	public static void init(Resources resources) {
 		sprites = new ArrayList<Bitmap>();
@@ -55,22 +83,28 @@ public class Background {
 		sprites.add(Utils.loadSprite(R.raw.tile4, resources, scale));
 		sprites.add(Utils.loadSprite(R.raw.tile5, resources, scale));
 		tileSize = (short) (sprites.get(0).getWidth());
-
 	}
 
-	private void createBitmap() {
-		mBitmap = Bitmap.createBitmap(xSize * tileSize, ySize * tileSize, Bitmap.Config.ARGB_8888);
-		mCanvas = new Canvas(mBitmap);
-		mCanvas.drawColor(Color.GRAY);
+	private Bitmap createMainBitmap() {
+
+		Bitmap bitmap = Bitmap.createBitmap(xSize * tileSize, ySize * tileSize, Bitmap.Config.ARGB_8888);
+		mainCanvas = new Canvas(bitmap);
+		mainCanvas.drawColor(Color.GRAY);
 		mPaint = new Paint();
 		for (int x = 0; x < xSize; x++) {
 			for (int y = 0; y < ySize; y++) {
-				mCanvas.drawBitmap(sprites.get(tileMap[x][y]), x * tileSize, y * tileSize, mPaint);
+				mainCanvas.drawBitmap(sprites.get(tileMap[x][y]), x * tileSize, y * tileSize, mPaint);
 			}
 		}
+		drawDimmedRect(mainCanvas);
+
+		return bitmap;
+	}
+
+	private void drawDimmedRect(Canvas canvas) {
 		mPaint.setColor(Color.GRAY);
 		mPaint.setAlpha(190);
-		mCanvas.drawRect(0, 0, xSize * tileSize, ySize * tileSize, mPaint);
+		canvas.drawRect(0, 0, xSize * tileSize, ySize * tileSize, mPaint);
 		mPaint.setAlpha(255);
 	}
 
@@ -80,12 +114,16 @@ public class Background {
 		}
 		for (Object drawable1 : drawables) {
 			Drawable drawable = (Drawable) drawable1;
-			drawable.draw(mCanvas, mPaint);
+			drawable.draw(mainCanvas, mPaint);
 		}
 		drawables.clear();
 	}
 
-	public Bitmap getBitmap() {
-		return mBitmap;
+	public Bitmap getMainBitmap() {
+		return bitmaps[1][1];
+	}
+
+	public Bitmap getBitmap(int x, int y) {
+		return bitmaps[x][y];
 	}
 }

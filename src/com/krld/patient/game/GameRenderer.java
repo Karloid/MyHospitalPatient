@@ -61,12 +61,12 @@ public class GameRenderer {
 	private void drawBackground(Paint paint, Canvas canvas) {
 		int xBackground = 0;
 		int yBackground = 0;
-		int size = 6;
-		for (int x = -size / 2; x < size; x++) {
-			for (int y = -size / 2; y < size; y++) {
-				xBackground = x * background.getBitmap().getWidth();
-				yBackground = y * background.getBitmap().getHeight();
-				canvas.drawBitmap(background.getBitmap(), xBackground - camera.getX(), yBackground - camera.getY(), paint);
+		int size = 1;
+		for (int x = -size ; x <= size; x++) {
+			for (int y = -size; y <= size; y++) {
+				xBackground = x * background.getMainBitmap().getWidth();
+				yBackground = y * background.getMainBitmap().getHeight();
+				canvas.drawBitmap(background.getBitmap(x+1, y+1), xBackground - camera.getX(), yBackground - camera.getY(), paint);
 			}
 		}
 
