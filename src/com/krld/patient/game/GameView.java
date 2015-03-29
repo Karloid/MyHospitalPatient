@@ -386,6 +386,17 @@ public class GameView extends SurfaceView implements ActiveView {
 		return tick;
 	}
 
+	public void increaseScore(int reward) {
+		score += reward;
+		if (score > getBestScore()) {
+			setBestScore(score);
+		}
+	}
+
+	public void setBestScore(int bestScore) {
+		this.bestScore = bestScore;
+	}
+
 	private class MyOnTouchListener implements OnTouchListener {
 		@Override
 		public boolean onTouch(View view, MotionEvent event) {
