@@ -268,7 +268,7 @@ public class GameView extends SurfaceView implements ActiveView {
 		SharedPreferences preferences = ((Activity) getContext()).getPreferences(Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putInt(BEST_SCORE_KEY, bestScore);
-		editor.commit();  //TODO
+		editor.apply();
 	}
 
 	private void moveUnits() {
@@ -364,6 +364,7 @@ public class GameView extends SurfaceView implements ActiveView {
 	}
 
 	public void onPause() {
+		saveBestScore();
 		runner.interrupt();
 		try {
 			runner.join();
