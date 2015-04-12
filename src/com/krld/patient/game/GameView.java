@@ -399,7 +399,9 @@ public class GameView extends SurfaceView implements ActiveView {
 	}
 
 	public boolean checkLegalPosition(float newX, float newY, Unit unit) {
-		return newX >= 0 && newX<= WIDTH_BASIS && newY >= 0 && newY <= gameHeight;
+		boolean legalX = newX >= 0 && newX <= WIDTH_BASIS;
+		boolean legalY = newY >= 0 && newY <= gameHeight;
+		return legalX && legalY;
 	}
 
 	private class MyOnTouchListener implements OnTouchListener {
