@@ -24,7 +24,7 @@ public class Nurse extends Creep {
 
     public Nurse(float x, float y, GameView context) {
         super(x, y, context);
-        speed = 5;
+        speed = 150;
         moveX = x + 1;
         moveY = y + 2;
         lastMove = System.currentTimeMillis();
@@ -50,8 +50,8 @@ public class Nurse extends Creep {
         return sprite;
     }
 
-    public void move() {
-        super.move();
+    public void move(float delta) {
+        super.move(delta);
         attackPlayer();
         if (moveX == null && moveY == null &&
                 System.currentTimeMillis() - lastMove > MOVE_DELAY) {

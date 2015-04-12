@@ -22,7 +22,7 @@ public class Player extends Unit {
 
     public static int scale;
 
-    public static final float SPEED = 10;
+    public static final float SPEED = 210;
 
     public Player(float x, float y, GameView context) {
         super(x, y, context);
@@ -35,8 +35,8 @@ public class Player extends Unit {
         effects.add(new ShieldEffect(this));
     }
 
-    public void move() {
-        super.move();
+    public void move(float delta) {
+        super.move(delta);
         decay();
         processEffects();
         checkHp();

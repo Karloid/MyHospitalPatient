@@ -48,14 +48,14 @@ public class GameRenderer {
 		background.update(gameView.decals);
 		drawBackground(paint, canvas);
 		try {
-			drawEntitys(canvas, paint);
+			drawEntities(canvas, paint);
 		} catch (Exception e) {
 			Log.e(GameView.TAG, "" + e.getMessage() + " " + e.getCause());
 			e.printStackTrace();
 			// debugMessage = Utils.getExceptionContent(e);
 		}
 		drawUI(canvas, paint);
-		drawMisc(canvas, paint);
+		drawGradient(canvas, paint);
 	}
 
 	private void drawBackground(Paint paint, Canvas canvas) {
@@ -80,7 +80,7 @@ public class GameRenderer {
 		return background;
 	}
 
-	private void drawEntitys(Canvas canvas, Paint paint) {
+	private void drawEntities(Canvas canvas, Paint paint) {
 		drawDrawable(gameView.getDrawBonuses(), canvas, paint);
 		drawDrawable(gameView.getDrawCreeps(), canvas, paint);
 		drawBullets(gameView.getDrawBullets(), canvas, paint);
@@ -192,11 +192,12 @@ public class GameRenderer {
 		canvas.drawRect(HP_BAR_MARGIN, hpStart - (hpStart - hpEnd) * multiplayer, HP_BAR_WIDTH, hpStart, paint);
 	}
 
-	private void drawMisc(Canvas canvas, Paint paint) {
+	private void drawGradient(Canvas canvas, Paint paint) {
 		paint.setColor(Color.rgb(100, 10, 88));
-		paint.setStrokeWidth(40);
+		int height = 20;
+		paint.setStrokeWidth( height);
 		for (int y = 0, alpha = 130; alpha > 2; alpha -= 15, y
-				+= 40) {
+				+=  height) {
 			paint.setAlpha(alpha);
 			canvas.drawLine(0, y, 550, y, paint);
 			if (y > 960) break;

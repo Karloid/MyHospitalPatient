@@ -80,7 +80,7 @@ public class GameView extends SurfaceView implements ActiveView {
 		holder.addCallback(new SurfaceHolder.Callback() {
 			@Override
 			public void surfaceCreated(SurfaceHolder holder) {
-				updateSurface();
+				updateSurface(0);
 			}
 
 			@Override
@@ -129,20 +129,26 @@ public class GameView extends SurfaceView implements ActiveView {
 	}
 
 	private void updateLoop() {
-		long time;
+		long currentTime;
+		long lastTime = System.currentTimeMillis();
+		float delta;
 		long delay;
 		while (true) {
 			if (this.gameOver) {
 				return;
 			}
-			this.update();
-			time = System.currentTimeMillis();
-			this.updateSurface();
+			currentTime = System.currentTimeMillis();
+			delta = (currentTime - lastTime) / 1000f;
+			lastTime = currentTime;
+
+			this.update(delta);
+
+			this.updateSurface(delta);
 			if (this.gameOver) {
 				return;
 			}
 			try {
-				delay = TIME_BETWEEN_TICKS - (System.currentTimeMillis() - time);
+				delay = TIME_BETWEEN_TICKS - (System.currentTimeMillis() - currentTime);
 				Thread.sleep((delay < 0 ? 0 : delay));
 			} catch (InterruptedException e) {
 				return;
@@ -151,12 +157,12 @@ public class GameView extends SurfaceView implements ActiveView {
 	}
 
 	@SuppressLint("WrongCall")
-	private void updateSurface() {
+	private void updateSurface(float delta) {
 		if (!holder.getSurface().isValid()) {
 			return;
 		}
 		Canvas canvas = holder.lockCanvas();
-		drawGame(canvas);
+		drawGame(canvas, delta);
 		holder.unlockCanvasAndPost(canvas);
 	}
 
@@ -184,7 +190,7 @@ public class GameView extends SurfaceView implements ActiveView {
 		gameRenderer.init(getResources());
 	}
 
-	public void drawGame(Canvas canvas) {
+	public void drawGame(Canvas canvas, float delta) {
 		fitCanvas(canvas);
 		camera.setX(player.x - camera.getWidth() / 2);
 		camera.setY(player.y - camera.getHeight() / 2);
@@ -212,30 +218,30 @@ public class GameView extends SurfaceView implements ActiveView {
 	}
 
 
-	private void update() {
+	private void update(float delta) {
 		try {
 			if (gameOver)
 				return;
 			tick++;
-			gameContentUpdate();
-			moveUnits();
-			player.move();
-			player.collect();
-			updateDrawCollections();
-			checkGameOver();
+			gameContentUpdate(delta);
+			moveUnits(delta);
+			player.move(delta);
+			player.collect(delta);
+			updateDrawCollections(delta);
+			checkGameOver(delta);
 		} catch (Exception e) {
 			debugMessage = Utils.getExceptionContent(e);
 		}
 	}
 
-	private void updateDrawCollections() {
+	private void updateDrawCollections(float delta) {
 		drawBonuses = new ArrayList<Unit>(bonuses);
 		drawCreeps = new ArrayList<Unit>(creeps);
 		drawBullets = new ArrayList<Bullet>(bullets);
 		drawAnimations = new ArrayList<Unit>(animations);
 	}
 
-	private void gameContentUpdate() {
+	private void gameContentUpdate(float delta) {//TODO
 		spawnBonuses();
 		spawnCreeps();
 	}
@@ -254,7 +260,7 @@ public class GameView extends SurfaceView implements ActiveView {
 		}
 	}
 
-	private void checkGameOver() {
+	private void checkGameOver(float delta) {
 		if (player.lives == 0) {
 			gameOver = true;
 			if (score > bestScore) {
@@ -271,10 +277,10 @@ public class GameView extends SurfaceView implements ActiveView {
 		editor.apply();
 	}
 
-	private void moveUnits() {
+	private void moveUnits(float delta) {
 		List<Creep> creepToRemove = null;
 		for (Creep creep : creeps) {
-			creep.move();
+			creep.move(delta);
 			if (creep.needRemove()) {
 				if (creepToRemove == null) {
 					creepToRemove = new ArrayList<Creep>();
@@ -290,7 +296,7 @@ public class GameView extends SurfaceView implements ActiveView {
 		List<Bullet> bulletsToRemove = new ArrayList<Bullet>();
 		long currentTimeMillis = System.currentTimeMillis();
 		for (Bullet bullet : bullets) {
-			bullet.move();
+			bullet.move(delta);
 			if (bullet.achieveTarget() || bullet.touchPlayer() || bullet.touchObstacle()
 					|| currentTimeMillis - bullet.getBirthDate() > Needle.lifeTime)
 				bulletsToRemove.add(bullet);
@@ -379,7 +385,7 @@ public class GameView extends SurfaceView implements ActiveView {
 			createAndStartRunner();
 			Log.i(TAG, "Runner has started");
 		} else {
-			updateSurface();
+			updateSurface(0);
 		}
 	}
 
@@ -399,8 +405,8 @@ public class GameView extends SurfaceView implements ActiveView {
 	}
 
 	public boolean checkLegalPosition(float newX, float newY, Unit unit) {
-		boolean legalX = newX >= 0 && newX <= WIDTH_BASIS;
-		boolean legalY = newY >= 0 && newY <= gameHeight;
+		boolean legalX = newX >= 0 && newX <= background.getRealWidth();
+		boolean legalY = newY >= 0 && newY <= background.getRealHeight();
 		return legalX && legalY;
 	}
 

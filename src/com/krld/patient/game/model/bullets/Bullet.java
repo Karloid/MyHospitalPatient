@@ -38,7 +38,7 @@ public abstract class Bullet extends Unit {
 	}
 
 
-	public void move() {
+	public void move(float delta) {
 		if (moveX == null || moveY == null || speed == 0)
 			return;
 		if (deltaX == null || deltaY == null) {

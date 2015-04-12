@@ -39,6 +39,8 @@ public class Background {
 	private Canvas mainCanvas;
 	private Paint mPaint;
 	private Bitmap[][] bitmaps;
+	private int realWidth;
+	private int realHeight;
 
 	public static void init(Resources resources) {
 		mainSprites = new ArrayList<Bitmap>();
@@ -86,6 +88,9 @@ public class Background {
 		xSize = (int) width / tileSize + 1;
 		ySize = (int) height / tileSize + 1;
 		generateTileMap();
+
+		realWidth = xSize * tileSize;
+		realHeight = ySize * tileSize;
 
 		bitmaps = new Bitmap[3][3];
 		for (int x = 0; x <= 2; x++) {
@@ -198,7 +203,7 @@ public class Background {
 
 	private Bitmap createMainBitmap() {
 
-		Bitmap bitmap = Bitmap.createBitmap(xSize * tileSize, ySize * tileSize, Bitmap.Config.ARGB_8888);
+		Bitmap bitmap = Bitmap.createBitmap(realWidth, realHeight, Bitmap.Config.ARGB_8888);
 		mainCanvas = new Canvas(bitmap);
 		mainCanvas.drawColor(Color.GRAY);
 		mPaint = new Paint();
@@ -236,5 +241,13 @@ public class Background {
 
 	public Bitmap getBitmap(int x, int y) {
 		return bitmaps[x][y];
+	}
+
+	public int getRealWidth() {
+		return realWidth;
+	}
+
+	public int getRealHeight() {
+		return realHeight;
 	}
 }

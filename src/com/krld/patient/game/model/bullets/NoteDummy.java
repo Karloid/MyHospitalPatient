@@ -15,7 +15,7 @@ public class NoteDummy extends Creep
 		speed = 0;
 	}
 
-	public void move()
+	public void move(float delta)
 	{
 		if (activated) return;
 		launchNeedles();

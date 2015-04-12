@@ -55,11 +55,12 @@ public abstract class Unit implements Drawable {
 		moveY = y;
 	}
 
-	public void move() {
+	public void move(float delta) {
 		if (moveX == null || moveY == null || speed == 0)
 			return;
-		float tX = Math.abs(x - moveX) / speed;
-		float tY = Math.abs(y - moveY) / speed;
+		float realSpeed = speed * delta;
+		float tX = Math.abs(x - moveX) / realSpeed;
+		float tY = Math.abs(y - moveY) / realSpeed;
 		float newX;
 		float newY;
 		if (tX > tY) {
@@ -69,8 +70,8 @@ public abstract class Unit implements Drawable {
 			newX = x + (moveX - x) / tY;
 			newY = y + (moveY - y) / tY;
 		}
-		if (!context.checkLegalPosition(newX, newY, this) || Math.abs(x - moveX) < speed &&
-				Math.abs(y - moveY) < speed) {
+		if (!context.checkLegalPosition(newX, newY, this) || Math.abs(x - moveX) < realSpeed &&
+				Math.abs(y - moveY) < realSpeed) {
 			moveX = null;
 			moveY = null;
 		} else {
@@ -80,7 +81,7 @@ public abstract class Unit implements Drawable {
 
 	}
 
-	public void collect() {
+	public void collect(float delta) {
 		List<Bonus> bonusToRemove = new ArrayList<Bonus>();
 		for (Bonus bonus : context.bonuses) {
 			if (Math.abs(bonus.x - x) < PICK_RANGE &&
@@ -99,7 +100,7 @@ public abstract class Unit implements Drawable {
 	}
 
 	public void damage(float dmg) {
-		hp -= dmg;    //TODO DEBUG MODE
+	//	hp -= dmg;    //TODO DEBUG MODE
 		if (hp < 0)
 			hp = 0;
 	}
