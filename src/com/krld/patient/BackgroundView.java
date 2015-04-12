@@ -19,6 +19,7 @@ public class BackgroundView extends View implements View.OnTouchListener {
 	private int mEndColor;
 	private List<Level> mLevels;
 	private Collection<Animation> animations;
+	private int currentTick;
 
 	public BackgroundView(Context context) {
 		super(context);
@@ -51,7 +52,18 @@ public class BackgroundView extends View implements View.OnTouchListener {
 		drawEnd(canvas, paint);
 		drawLevels(canvas, paint);
 		drawAnimation(canvas, paint);
+		drawFade(canvas, paint);
 		removeAnim();
+	}
+
+	private void drawFade(Canvas canvas, Paint paint) {
+		int alphaLevel = 255 - currentTick;
+
+		if (alphaLevel < 0) return;
+		currentTick++;
+		paint.setColor(Color.BLACK);
+		paint.setAlpha(alphaLevel);
+		canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), paint);
 	}
 
 	private void removeAnim() {
@@ -79,9 +91,9 @@ public class BackgroundView extends View implements View.OnTouchListener {
 
 	private void initLevels() {
 		mLevels = new ArrayList<Level>();
-		mLevels.add(new Level(getResources().getColor(R.color.level_1), 20, 20));
-		mLevels.add(new Level(getResources().getColor(R.color.level_2), 5, 50));
-		mLevels.add(new Level(getResources().getColor(R.color.level_3), 2, 100));
+		//	mLevels.add(new Level(getResources().getColor(R.color.level_1), 20, 20));
+		mLevels.add(new Level(getResources().getColor(R.color.level_2), 5, 86));
+		mLevels.add(new Level(getResources().getColor(R.color.level_3), 3, 130));
 	}
 
 	private void drawLevels(Canvas canvas, Paint paint) {
@@ -158,7 +170,7 @@ public class BackgroundView extends View implements View.OnTouchListener {
 		}
 
 		private float getSpeed() {
-			return mHeight / 100f;
+			return mHeight / 300f;
 		}
 	}
 

@@ -291,7 +291,7 @@ public class GameView extends SurfaceView implements ActiveView {
 		long currentTimeMillis = System.currentTimeMillis();
 		for (Bullet bullet : bullets) {
 			bullet.move();
-			if (bullet.achieveTarget() || bullet.touchPlayer()
+			if (bullet.achieveTarget() || bullet.touchPlayer() || bullet.touchObstacle()
 					|| currentTimeMillis - bullet.getBirthDate() > Needle.lifeTime)
 				bulletsToRemove.add(bullet);
 		}
@@ -399,7 +399,7 @@ public class GameView extends SurfaceView implements ActiveView {
 	}
 
 	public boolean checkLegalPosition(float newX, float newY, Unit unit) {
-		return true;
+		return newX >= 0 && newX<= WIDTH_BASIS && newY >= 0 && newY <= gameHeight;
 	}
 
 	private class MyOnTouchListener implements OnTouchListener {
