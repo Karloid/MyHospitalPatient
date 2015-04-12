@@ -25,6 +25,7 @@ public class Background {
 	private static List<Bitmap> wallHorizontalSprites;
 	private static List<Bitmap> wallLCornerLeftSprites;
 	private static List<Bitmap> wallLCornerRightSprites;
+	private static List<Bitmap> wastelandDecals;
 
 	private final float width;
 	private final float height;
@@ -79,6 +80,11 @@ public class Background {
 		wallLCornerRightSprites = new ArrayList<Bitmap>();
 		wallLCornerRightSprites.add(Utils.loadSprite(R.raw.tile_wall_l_corner_right, resources, scale));
 
+		wastelandDecals = new ArrayList<Bitmap>();
+		wastelandDecals.add(Utils.loadSprite(R.raw.decal_wasteland_tree, resources, scale));
+		wastelandDecals.add(Utils.loadSprite(R.raw.decal_wasteland_pool, resources, scale));
+		wastelandDecals.add(Utils.loadSprite(R.raw.decal_wasteland_pool2, resources, scale));
+
 		tileSize = (short) (mainSprites.get(0).getWidth());
 	}
 
@@ -128,6 +134,50 @@ public class Background {
 		int maxX = xSize - 1;
 		int maxY = ySize - 1;
 
+		drawFloorTiles(globalX, globalY, canvas, maxX, maxY);
+		drawWastelandsDecals(globalX, globalY, canvas, maxX, maxY);
+
+		drawDimmedRect(canvas);
+		return bitmap;
+	}
+
+	private void drawWastelandsDecals(int globalX, int globalY, Canvas canvas, int maxX, int maxY) {
+		if (globalX == COLUMN_1 && globalY != ROW_2) {
+			return;
+		}
+
+		String leftKey = "left";
+		String topKey = "top";
+		String bitmapKey = "bitmap";
+
+		int treesCount = 20;
+		Map<Float, Map<String, Object>> map = new TreeMap<Float, Map<String, Object>>(new Comparator<Float>() {
+			@Override
+			public int compare(Float o1, Float o2) {
+				return o1.compareTo(o2);
+			}
+		});
+		for (int i = 0; i < treesCount; i++) {
+			Bitmap bitmap = wastelandDecals.get(randomIndex(wastelandDecals));
+			int decalXOffset = bitmap.getWidth();
+			int decalYOffset = bitmap.getHeight();
+			float left = (float) Math.random() * (canvas.getWidth() - decalXOffset);
+			float top = (float) Math.random() * (canvas.getHeight() - decalYOffset);
+
+			Map<String, Object> hashMap = new HashMap<String, Object>();  //TODO model
+			hashMap.put(leftKey, left);
+			hashMap.put(topKey, top);
+			hashMap.put(bitmapKey, bitmap);
+			map.put(top, hashMap);
+		}
+
+		for (Map<String, Object> objToDraw : map.values()) {
+			canvas.drawBitmap((Bitmap) objToDraw.get(bitmapKey), (Float) objToDraw.get(leftKey), (Float) objToDraw.get(topKey), mPaint);
+		}
+
+	}
+
+	private void drawFloorTiles(int globalX, int globalY, Canvas canvas, int maxX, int maxY) {
 		for (int x = 0; x <= maxX; x++) {
 			for (int y = 0; y <= maxY; y++) {
 				canvas.drawBitmap(wastelandSprites.get(randomIndex(wastelandSprites)), x * tileSize, y * tileSize, mPaint);
@@ -193,8 +243,6 @@ public class Background {
 				}
 			}
 		}
-		drawDimmedRect(canvas);
-		return bitmap;
 	}
 
 	private int randomIndex(List<Bitmap> list) {
