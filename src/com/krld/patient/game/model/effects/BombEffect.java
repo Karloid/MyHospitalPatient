@@ -52,7 +52,7 @@ public class BombEffect extends Effect {
 		for (Bullet needle : owner.context.bullets) {
 			if (Utils.getDistance(owner, needle) < effectRadius) {
 
-				needle.moveOut(owner);
+				needle.reverseDirection(owner);
 			}
 		}
 	}

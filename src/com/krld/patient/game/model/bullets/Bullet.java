@@ -47,7 +47,7 @@ public abstract class Bullet extends Unit
 
 	public void move()
 	{
-		if (moveX == null || moveY == null || speed == 0) 
+		if (moveX == null || moveY == null || speed == 0)
 			return;
 		if (deltaX == null || deltaY == null)
 		{
@@ -57,10 +57,8 @@ public abstract class Bullet extends Unit
 		y += deltaY;
 	}
 
-	public void moveOut(Unit unit)
+	public void reverseDirection(Unit unit)
 	{
-//		deltaX = null;
-//		deltaY = null;
 		moveX = (unit.x - x) * -1 + x;
 		moveY = (unit.y - y) * -1 + y;
 

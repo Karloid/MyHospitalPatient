@@ -398,6 +398,10 @@ public class GameView extends SurfaceView implements ActiveView {
 		this.bestScore = bestScore;
 	}
 
+	public boolean checkLegalPosition(float newX, float newY, Unit unit) {
+		return true;
+	}
+
 	private class MyOnTouchListener implements OnTouchListener {
 		@Override
 		public boolean onTouch(View view, MotionEvent event) {

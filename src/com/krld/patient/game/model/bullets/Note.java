@@ -90,8 +90,8 @@ public class Note extends Bullet {
 		 */
 	}
 
-	public void moveOut(Unit unit) {
-		super.moveOut(unit);
+	public void reverseDirection(Unit unit) {
+		super.reverseDirection(unit);
 
 	}
 
