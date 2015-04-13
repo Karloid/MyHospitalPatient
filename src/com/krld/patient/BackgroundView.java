@@ -1,6 +1,7 @@
 package com.krld.patient;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -20,6 +21,7 @@ public class BackgroundView extends View implements View.OnTouchListener {
 	private List<Level> mLevels;
 	private Collection<Animation> animations;
 	private int currentTick;
+	private Paint paint;
 
 	public BackgroundView(Context context) {
 		super(context);
@@ -41,11 +43,11 @@ public class BackgroundView extends View implements View.OnTouchListener {
 		animations = new ArrayList<Animation>();
 		CloudAnimation.init(getResources());
 		setOnTouchListener(this);
+		paint = new Paint();
 	}
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		Paint paint = new Paint();
 		if (mLevels == null) {
 			initLevels();
 		}
@@ -53,7 +55,20 @@ public class BackgroundView extends View implements View.OnTouchListener {
 		drawLevels(canvas, paint);
 		drawAnimation(canvas, paint);
 		drawFade(canvas, paint);
+		drawVersionCode(canvas, paint);
 		removeAnim();
+	}
+
+	private void drawVersionCode(Canvas canvas, Paint paint) {
+		try {
+			String versionName = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0).versionName;
+			paint.setTextSize(35);
+			paint.setStyle(Paint.Style.FILL);
+			paint.setColor(getResources().getColor(R.color.version_text_color));
+			canvas.drawText(versionName, 0, canvas.getHeight() - 5, paint);
+		} catch (PackageManager.NameNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void drawFade(Canvas canvas, Paint paint) {

@@ -100,7 +100,7 @@ public abstract class Unit implements Drawable {
 	}
 
 	public void damage(float dmg) {
-	//	hp -= dmg;    //TODO DEBUG MODE
+		hp -= dmg;    //TODO DEBUG MODE
 		if (hp < 0)
 			hp = 0;
 	}
