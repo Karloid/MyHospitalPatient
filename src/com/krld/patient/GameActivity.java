@@ -1,9 +1,10 @@
 package com.krld.patient;
 
-import android.app.*;
-import android.os.*;
-import android.view.*;
-import android.widget.*;
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.View;
+import android.view.Window;
+import android.widget.LinearLayout;
 import com.krld.patient.game.GameView;
 
 public class GameActivity extends Activity {

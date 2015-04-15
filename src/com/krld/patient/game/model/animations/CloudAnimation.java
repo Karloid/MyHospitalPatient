@@ -1,13 +1,16 @@
 package com.krld.patient.game.model.animations;
 
 
-import android.content.res.*;
-import android.graphics.*;
-import com.krld.patient.*;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import com.krld.patient.R;
 import com.krld.patient.game.GameView;
 import com.krld.patient.game.Utils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CloudAnimation extends Animation {
 

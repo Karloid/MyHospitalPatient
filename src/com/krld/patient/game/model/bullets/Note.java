@@ -1,7 +1,9 @@
 package com.krld.patient.game.model.bullets;
 
-import android.content.res.*;
-import android.graphics.*;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import com.krld.patient.R;
 import com.krld.patient.game.GameView;
 import com.krld.patient.game.Utils;

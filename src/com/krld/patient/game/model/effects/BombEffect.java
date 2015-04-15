@@ -1,14 +1,17 @@
 package com.krld.patient.game.model.effects;
 
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import com.krld.patient.game.Utils;
 import com.krld.patient.game.camera.GameCamera;
-import com.krld.patient.game.model.bullets.Bullet;
 import com.krld.patient.game.model.Unit;
+import com.krld.patient.game.model.bullets.Bullet;
 import com.krld.patient.game.model.creeps.Creep;
 import com.krld.patient.game.model.decals.BombSpot;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BombEffect extends Effect {
 	private final float effectStartRadius;

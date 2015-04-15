@@ -18,12 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import static com.krld.patient.game.UIConstants.*;
-import static com.krld.patient.game.UIConstants.HP_BAR_MARGIN;
-import static com.krld.patient.game.UIConstants.HP_BAR_WIDTH;
 
-/**
- * Created by Andrey on 9/10/2014.
- */
 public class GameRenderer {
 	private final GameView gameView;
 	private Background background;
@@ -62,11 +57,11 @@ public class GameRenderer {
 		int xBackground = 0;
 		int yBackground = 0;
 		int size = 1;
-		for (int x = -size ; x <= size; x++) {
+		for (int x = -size; x <= size; x++) {
 			for (int y = -size; y <= size; y++) {
 				xBackground = x * background.getMainBitmap().getWidth();
 				yBackground = y * background.getMainBitmap().getHeight();
-				canvas.drawBitmap(background.getBitmap(x+1, y+1), xBackground - camera.getX(), yBackground - camera.getY(), paint);
+				canvas.drawBitmap(background.getBitmap(x + 1, y + 1), xBackground - camera.getX(), yBackground - camera.getY(), paint);
 			}
 		}
 
@@ -89,9 +84,9 @@ public class GameRenderer {
 	}
 
 	private void drawBullets(List<Bullet> drawBullets, Canvas canvas, Paint paint) {
-	   for (Bullet bullet : drawBullets) {
-		   bullet.draw(canvas, paint, camera);
-	   }
+		for (Bullet bullet : drawBullets) {
+			bullet.draw(canvas, paint, camera);
+		}
 	}
 
 	private void drawDrawable(List<? extends Unit> drawables, Canvas canvas, Paint paint) {
@@ -195,9 +190,9 @@ public class GameRenderer {
 	private void drawGradient(Canvas canvas, Paint paint) {
 		paint.setColor(Color.rgb(100, 10, 88));
 		int height = 20;
-		paint.setStrokeWidth( height);
+		paint.setStrokeWidth(height);
 		for (int y = 0, alpha = 130; alpha > 2; alpha -= 15, y
-				+=  height) {
+				+= height) {
 			paint.setAlpha(alpha);
 			canvas.drawLine(0, y, 550, y, paint);
 			if (y > 960) break;

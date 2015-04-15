@@ -1,8 +1,11 @@
 package com.krld.patient.game.model;
 
-import android.content.res.*;
-import android.graphics.*;
-import com.krld.patient.*;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import com.krld.patient.R;
 import com.krld.patient.game.Drawable;
 import com.krld.patient.game.Utils;
 import com.krld.patient.game.model.decals.Decal;

@@ -1,13 +1,16 @@
 package com.krld.patient.game.model;
 
-import android.content.res.*;
-import android.graphics.*;
+import android.content.res.Resources;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import com.krld.patient.game.Drawable;
 import com.krld.patient.game.GameView;
 import com.krld.patient.game.camera.GameCamera;
 import com.krld.patient.game.model.bonuses.Bonus;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Unit implements Drawable {
 

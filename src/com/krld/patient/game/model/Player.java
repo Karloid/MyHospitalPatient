@@ -1,7 +1,7 @@
 package com.krld.patient.game.model;
 
-import android.content.res.*;
-import android.graphics.*;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import com.krld.patient.R;
 import com.krld.patient.game.GameView;
 import com.krld.patient.game.Utils;
@@ -9,7 +9,8 @@ import com.krld.patient.game.model.decals.BloodSpot;
 import com.krld.patient.game.model.effects.Effect;
 import com.krld.patient.game.model.effects.ShieldEffect;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Player extends Unit {
 	public static Bitmap sprite;

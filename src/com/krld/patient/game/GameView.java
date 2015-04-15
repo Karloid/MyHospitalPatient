@@ -2,16 +2,19 @@ package com.krld.patient.game;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.*;
-import android.graphics.*;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Canvas;
 import android.util.Log;
-import android.view.*;
-
-import java.util.*;
-
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
 import com.krld.patient.ActiveView;
 import com.krld.patient.game.camera.GameCamera;
-import com.krld.patient.game.model.*;
+import com.krld.patient.game.model.Background;
+import com.krld.patient.game.model.Player;
+import com.krld.patient.game.model.Unit;
 import com.krld.patient.game.model.animations.Animation;
 import com.krld.patient.game.model.animations.BloodAnimation;
 import com.krld.patient.game.model.animations.CloudAnimation;
@@ -25,6 +28,10 @@ import com.krld.patient.game.model.creeps.Nurse;
 import com.krld.patient.game.model.decals.BloodSpot;
 import com.krld.patient.game.model.decals.BombSpot;
 import com.krld.patient.game.model.decals.Decal;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class GameView extends SurfaceView implements ActiveView {
 	public static final float WIDTH_BASIS = 540f;
