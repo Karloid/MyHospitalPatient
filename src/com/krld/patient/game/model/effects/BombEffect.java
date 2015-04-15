@@ -11,12 +11,17 @@ import com.krld.patient.game.model.decals.BombSpot;
 import java.util.*;
 
 public class BombEffect extends Effect {
-	float effectRadius;
+	private final float effectStartRadius;
+	float effectCurrentRadius;
+	float effectMaxRadius;
 
 	public BombEffect(Unit owner) {
 		super(owner);
-		effectRadius = 20;
-		duration = 5;
+		effectStartRadius = 20;
+		effectCurrentRadius = effectStartRadius;
+		durationTick = 5;
+		durationTime = 500;
+		effectMaxRadius = 300;
 		owner.context.decals.add(new BombSpot(owner.x, owner.y, owner.context));
 	}
 
@@ -25,21 +30,20 @@ public class BombEffect extends Effect {
 		paint.setAlpha(200);
 		float cx = owner.x - camera.getX();
 		float cy = owner.y + yCorrection - camera.getY();
-		canvas.drawCircle(cx, cy, effectRadius, paint);
+		canvas.drawCircle(cx, cy, effectCurrentRadius, paint);
 		paint.setColor(Color.YELLOW);
 		paint.setAlpha(88);
-		canvas.drawCircle(cx, cy, effectRadius / 5, paint);
+		canvas.drawCircle(cx, cy, effectCurrentRadius / 5, paint);
 		paint.setAlpha(255);
-		effectRadius *= 1.5;
 	}
 
-	public void effect() {
+	public void doEffect(float delta) {
 
-		List<Unit> unitsToRemove = null;
+		List<Creep> unitsToRemove = null;
 		for (Creep creep : owner.context.creeps) {
-			if (Utils.getDistance(owner, creep) < effectRadius) {
+			if (Utils.getDistance(owner, creep) < effectCurrentRadius) {
 				if (unitsToRemove == null)
-					unitsToRemove = new ArrayList<Unit>();
+					unitsToRemove = new ArrayList<Creep>();
 				creep.die();
 				unitsToRemove.add(creep);
 			}
@@ -50,10 +54,13 @@ public class BombEffect extends Effect {
 		}
 
 		for (Bullet needle : owner.context.bullets) {
-			if (Utils.getDistance(owner, needle) < effectRadius) {
+			if (Utils.getDistance(owner, needle) < effectCurrentRadius) {
 
 				needle.reverseDirection(owner);
 			}
 		}
+		float deltaRadius = effectMaxRadius - effectStartRadius;
+		float deltaTime = System.currentTimeMillis() - birthDateTime;
+		effectCurrentRadius = deltaRadius * (deltaTime / durationTime);
 	}
 }

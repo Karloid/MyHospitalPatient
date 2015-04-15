@@ -73,6 +73,8 @@ public class GameView extends SurfaceView implements ActiveView {
 	private List<Unit> drawAnimations;
 	private GameCamera camera;
 
+	private long lastSpawnBonuses;
+
 
 	public GameView(Context context) {
 		super(context);
@@ -241,12 +243,12 @@ public class GameView extends SurfaceView implements ActiveView {
 		drawAnimations = new ArrayList<Unit>(animations);
 	}
 
-	private void gameContentUpdate(float delta) {//TODO
-		spawnBonuses();
-		spawnCreeps();
+	private void gameContentUpdate(float delta) {
+		spawnBonuses(delta);
+		spawnCreeps(delta);
 	}
 
-	private void spawnCreeps() {
+	private void spawnCreeps(float delta) {
 		if (creeps.size() < 50 && System.currentTimeMillis() - lastNurseSpawnTime > nurseSpawnCoolDown) {
 			if (Math.random() > 0.3f) {
 				creeps.add(new Nurse((float) (20 + Math.random() * 500),
@@ -278,19 +280,19 @@ public class GameView extends SurfaceView implements ActiveView {
 	}
 
 	private void moveUnits(float delta) {
-		List<Creep> creepToRemove = null;
+		List<Creep> creepыToRemove = null;
 		for (Creep creep : creeps) {
 			creep.move(delta);
 			if (creep.needRemove()) {
-				if (creepToRemove == null) {
-					creepToRemove = new ArrayList<Creep>();
+				if (creepыToRemove == null) {
+					creepыToRemove = new ArrayList<Creep>();
 				}
-				creepToRemove.add(creep);
+				creepыToRemove.add(creep);
 			}
 		}
 
-		if (creepToRemove != null) {
-			creeps.removeAll(creepToRemove);
+		if (creepыToRemove != null) {
+			creeps.removeAll(creepыToRemove);
 		}
 
 		List<Bullet> bulletsToRemove = new ArrayList<Bullet>();
@@ -307,7 +309,14 @@ public class GameView extends SurfaceView implements ActiveView {
 		bullets.removeAll(bulletsToRemove);
 	}
 
-	private void spawnBonuses() {
+	private void spawnBonuses(float delta) {   //TODO rework
+		long spawnBonusesDelay = 50;
+		long currentTimeMillis = System.currentTimeMillis();
+		if (currentTimeMillis - lastSpawnBonuses > spawnBonusesDelay) {
+			lastSpawnBonuses = currentTimeMillis;
+		} else {
+			return;
+		}
 		if (Math.random() < 0.0512f && bonuses.size() < 10)
 			bonuses.add(new Medkit((float) (20 + Math.random() * 500),
 					(float) (20 + Math.random() * 690), this));

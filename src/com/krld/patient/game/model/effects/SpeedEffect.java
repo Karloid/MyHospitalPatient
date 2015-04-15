@@ -32,7 +32,7 @@ public class SpeedEffect extends Effect {
         owner.speed = Player.SPEED;
     }
 
-    public void effect() {
+    public void doEffect(float delta) {
         positions.add(new Point((int) owner.x, (int) owner.y));
         if (positions.size() > 5) {
             positions.remove(0);

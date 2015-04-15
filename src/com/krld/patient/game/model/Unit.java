@@ -21,7 +21,7 @@ public abstract class Unit implements Drawable {
 	public float speed;
 
 	public int size;
-	public int hp;
+	public float hp;
 	public int maxHp;
 
 	public GameView context;
