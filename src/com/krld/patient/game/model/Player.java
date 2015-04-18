@@ -48,7 +48,7 @@ public class Player extends Unit {
 		List<Effect> effectsToRemove = new ArrayList<Effect>();
 		for (Effect effect : effects) {
 			effect.doEffect(delta);
-			if (!effect.checkEffectTime()) {
+			if (!effect.isEndEffectTime()) {
 				effect.postEffect();
 				effectsToRemove.add(effect);
 			}

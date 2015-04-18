@@ -16,6 +16,7 @@ public class SpeedEffect extends Effect {
 	public SpeedEffect(Unit owner) {
 		super(owner);
 		positions = new ArrayList<Point>();
+		durationTime = 1f;
 	}
 
 	public void draw(Canvas canvas, Paint paint, GameCamera camera) {
@@ -36,6 +37,7 @@ public class SpeedEffect extends Effect {
 	}
 
 	public void doEffect(float delta) {
+		super.doEffect(delta);
 		positions.add(new Point((int) owner.x, (int) owner.y));
 		if (positions.size() > 5) {
 			positions.remove(0);

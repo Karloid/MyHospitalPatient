@@ -11,6 +11,7 @@ public class ShieldEffect extends Effect {
 
 	public ShieldEffect(Unit owner) {
 		super(owner);
+		durationTime = 3f;
 	}
 
 	public void draw(Canvas canvas, Paint paint, GameCamera camera) {

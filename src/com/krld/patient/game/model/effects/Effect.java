@@ -6,31 +6,27 @@ import com.krld.patient.game.camera.GameCamera;
 import com.krld.patient.game.model.Unit;
 
 public abstract class Effect {
-	long birthDateTick;   //TODO remove
-	long birthDateTime;
-	protected long durationTick;    //TODO remove
-	protected long durationTime;
+	protected long birthDateTimeMs;
+	protected float durationTime;
+	protected float currentLifeTime;
 	protected Unit owner;
 
 	protected static float yCorrection = 0;
 
 	protected Effect(Unit owner) {
 		this.owner = owner;
-		birthDateTick = owner.context.getTick();
-		birthDateTime = System.currentTimeMillis();
-		durationTick = 25;   //TODO rework
+		birthDateTimeMs = System.currentTimeMillis();
 	}
 
 	public void postEffect() {
 	}
 
 	public void doEffect(float delta) {
+		currentLifeTime += delta;
 	}
 
-	public boolean checkEffectTime() {
-		if (owner.context.getTick() - birthDateTick > durationTick) {    //TODO rework
-			return false;
-		} else return true;
+	public boolean isEndEffectTime() {
+		return currentLifeTime <= durationTime;
 	}
 
 	public abstract void draw(Canvas canvas, Paint paint, GameCamera camera);

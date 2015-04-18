@@ -22,9 +22,8 @@ public class BombEffect extends Effect {
 		super(owner);
 		effectStartRadius = 20;
 		effectCurrentRadius = effectStartRadius;
-		durationTick = 5;
-		durationTime = 500;
-		effectMaxRadius = 300;
+		durationTime = 0.3f;
+		effectMaxRadius = 200;
 		owner.context.decals.add(new BombSpot(owner.x, owner.y, owner.context));
 	}
 
@@ -41,6 +40,7 @@ public class BombEffect extends Effect {
 	}
 
 	public void doEffect(float delta) {
+		super.doEffect(delta);
 
 		List<Creep> unitsToRemove = null;
 		for (Creep creep : owner.context.creeps) {
@@ -63,7 +63,6 @@ public class BombEffect extends Effect {
 			}
 		}
 		float deltaRadius = effectMaxRadius - effectStartRadius;
-		float deltaTime = System.currentTimeMillis() - birthDateTime;
-		effectCurrentRadius = deltaRadius * (deltaTime / durationTime);
+		effectCurrentRadius = Math.min(deltaRadius * (currentLifeTime / durationTime), effectMaxRadius);
 	}
 }
