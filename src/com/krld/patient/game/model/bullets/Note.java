@@ -14,6 +14,7 @@ import com.krld.patient.game.model.animations.BloodAnimation;
 public class Note extends Bullet {
 
 	public static final int SCALE_FACTOR = 5;
+	public static final int SPEED = 270;
 
 	public long getBirthDate() {
 		return birthDate;
@@ -29,15 +30,10 @@ public class Note extends Bullet {
 
 	private static float touchDmg = 10;
 
-	Note(float x, float y, GameView context) {
-		super(x, y, context);
-		speed = 26;
-	}
-
 	public Note(float x, float y
 			, GameView context, Unit target) {
 		super(x, y, context);
-		speed = 26;
+		speed = SPEED;
 		size = 10;
 		moveX = target.x;
 		moveY = target.y;
@@ -57,11 +53,8 @@ public class Note extends Bullet {
 	}
 
 	public boolean achieveTarget() {
-		if (Math.abs(x - moveX) < TOUCH_RANGE &&
-				Math.abs(y - moveY) < TOUCH_RANGE) {
-			return true;
-		}
-		return false;
+		return Math.abs(x - moveX) < TOUCH_RANGE &&
+				Math.abs(y - moveY) < TOUCH_RANGE;
 	}
 
 	public void draw(Canvas canvas, Paint paint, GameCamera camera) {
@@ -79,17 +72,7 @@ public class Note extends Bullet {
 
 	public void postAction() {
 		if (touchPlayer()) return;
-		//	Game.debugMessage = "ok";
 		context.creeps.add(new NoteDummy(x, y, context));
-		//	context.bullets.add(new Needle(x, y , context, context.player));
-		/*	context.bullets.add(new Needle(x, y , context, x, y + 5));
-		 context.bullets.add(new Needle(x, y , context, x - 5, y + 5));
-		 context.bullets.add(new Needle(x, y , context, x - 5, y));
-		 context.bullets.add(new Needle(x, y , context, x - 5, y - 5));
-		 context.bullets.add(new Needle(x, y , context, x, y - 5));
-		 context.bullets.add(new Needle(x, y , context, x + 5, y - 5));
-		 context.bullets.add(new Needle(x, y , context, x + 5, y));
-		 */
 	}
 
 	public void reverseDirection(Unit unit) {

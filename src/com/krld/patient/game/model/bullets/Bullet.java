@@ -44,8 +44,8 @@ public abstract class Bullet extends Unit {
 		if (deltaX == null || deltaY == null) {
 			calculateDeltas();
 		}
-		x += deltaX;
-		y += deltaY;
+		x += deltaX * delta;
+		y += deltaY * delta;
 		if (!context.checkLegalPosition(x, y, this)) {
 			context.animations.add(new CloudAnimation(x, y, context));
 			touchObstacle = true;

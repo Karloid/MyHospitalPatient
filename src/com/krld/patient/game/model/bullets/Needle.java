@@ -14,6 +14,7 @@ import com.krld.patient.game.model.animations.BloodAnimation;
 public class Needle extends Bullet {
 
 	public static final int SCALE_FACTOR = 2;
+	public static final int SPEED = 240;
 
 	public long getBirthDate() {
 		return birthDate;
@@ -31,7 +32,7 @@ public class Needle extends Bullet {
 
 	Needle(float x, float y, GameView context) {
 		super(x, y, context);
-		speed = 26;
+		speed = SPEED;
 	}
 
 	public Needle(float x, float y
@@ -42,7 +43,7 @@ public class Needle extends Bullet {
 	Needle(float x, float y
 			, GameView context, float targetX, float targetY) {
 		super(x, y, context);
-		speed = 16;
+		speed = SPEED;
 		size = 10;
 		moveX = targetX;
 		moveY = targetY;
