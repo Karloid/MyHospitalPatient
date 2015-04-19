@@ -30,17 +30,6 @@ public class Nurse extends Creep {
 		moveX = x + 1;
 		moveY = y + 2;
 		lastMove = System.currentTimeMillis();
-		float rnd = (float) Math.random();
-		if (rnd < 0.25f) {
-			x = 0;
-		} else if (rnd < 0.5f) {
-			x = 545;
-		} else if (rnd < 0.75f) {
-			y = 0;
-		} else {
-			y = 670;
-		}
-
 	}
 
 	public void draw(Canvas canvas, Paint paint) {
@@ -64,7 +53,7 @@ public class Nurse extends Creep {
 	}
 
 	public void attackPlayer() {
-		if (System.currentTimeMillis() - lastLaunch > launchCooldown && Math.random() < getLaunchChance()) {
+		if (!context.player.isDead() && System.currentTimeMillis() - lastLaunch > launchCooldown && Math.random() < getLaunchChance()) {
 			launchNeedle();
 			lastLaunch = System.currentTimeMillis();
 		}

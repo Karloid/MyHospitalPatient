@@ -24,7 +24,7 @@ public class BombEffect extends Effect {
 		effectStartRadius = 20;
 		effectCurrentRadius = effectStartRadius;
 		durationTime = 0.3f;
-		effectMaxRadius = 200;
+		effectMaxRadius = 230;
 
 		float cx = owner.x;
 		float cy = owner.y;

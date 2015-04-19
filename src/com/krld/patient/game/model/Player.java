@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import com.krld.patient.R;
 import com.krld.patient.game.GameView;
 import com.krld.patient.game.Utils;
+import com.krld.patient.game.model.animations.BloodAnimation;
 import com.krld.patient.game.model.decals.BloodSpot;
 import com.krld.patient.game.model.effects.Effect;
 import com.krld.patient.game.model.effects.ShieldEffect;
@@ -13,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player extends Unit {
-	public static Bitmap sprite;
-
+	private static Bitmap spriteAlive;
+	private static Bitmap spriteDead;
 	private float decayDmg;
 
 	public int lives;
@@ -25,12 +26,19 @@ public class Player extends Unit {
 
 	public static final float SPEED = 210;
 
+	// death related
+	private float deadDurationMax;
+	private boolean isDead;
+	private long deadAtTime;
+	private float deadDuration;
+
 	public Player(float x, float y, GameView context) {
 		super(x, y, context);
 		speed = SPEED;
 		hp = 55;
 		decayDmg = 1;
 		lives = 3;
+		deadDurationMax = 4;
 
 		effects = new ArrayList<Effect>();
 		effects.add(new ShieldEffect(this));
@@ -40,8 +48,13 @@ public class Player extends Unit {
 		super.move(delta);
 		decay(delta);
 		processEffects(delta);
-		checkHp();
+		checkHp(delta);
+	}
 
+	@Override
+	public void moveTo(float x, float y) {
+		if (!isDead)
+			super.moveTo(x, y);
 	}
 
 	private void processEffects(float delta) {
@@ -56,14 +69,33 @@ public class Player extends Unit {
 		effects.removeAll(effectsToRemove);
 	}
 
-	private void checkHp() {
+	private void checkHp(float delta) {
 		if (hp == 0) {
-			lives--;
-			hp = maxHp;
-			effects.add(new ShieldEffect(this));
-			x = 250;
-			y = 300;
+			if (isDead) {
+				deadDuration += delta;
+				if (deadDuration > deadDurationMax) {
+					resurrect(delta);
+				}
+			} else {
+				die();
+			}
 		}
+	}
+
+	private void die() {
+		isDead = true;
+		deadAtTime = System.currentTimeMillis();
+		deadDuration = 0;
+		moveX = null;
+		moveY = null;
+		createDeadDecalsAmdAnimations();
+	}
+
+	private void resurrect(float delta) {
+		lives--;
+		hp = maxHp;
+		effects.add(new ShieldEffect(this));
+		isDead = false;
 	}
 
 	private void decay(float delta) {
@@ -71,7 +103,8 @@ public class Player extends Unit {
 	}
 
 	public static void init(Resources resources) {
-		sprite = Utils.loadSprite(R.raw.player, resources);
+		spriteAlive = Utils.loadSprite(R.raw.player_alive, resources);
+		spriteDead = Utils.loadSprite(R.raw.player_dead, resources);
 	}
 
 	@Override
@@ -87,6 +120,21 @@ public class Player extends Unit {
 
 	@Override
 	public Bitmap getBitmap() {
-		return sprite;
+		return isDead ? spriteDead : spriteAlive;
+	}
+
+	public void setDead(boolean dead) {
+		this.isDead = dead;
+	}
+
+	public boolean isDead() {
+		return isDead;
+	}
+
+	public void createDeadDecalsAmdAnimations() {
+		for (int i = 0; i < 10; i++)
+			context.decals.add(new BloodSpot(x + (float) Math.random() * 80 - 40, y + (float) Math.random() * 80 - 40, context));
+		for (int i = 0; i < 14; i++)
+			context.animations.add(new BloodAnimation(x + (float) Math.random() * 80 - 40, y + (float) Math.random() * 80 - 40, context));
 	}
 }

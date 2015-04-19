@@ -28,18 +28,9 @@ public abstract class Creep extends Unit {
 
 	}
 
-	public void createCorpse() {
-		for (int i = 0; i < 5; i++)
-			context.decals.add(new BloodSpot(x + (float) Math.random() * 80 - 40, y + (float) Math.random() * 80 - 40, context));
-		for (int i = 0; i < 14; i++)
-			context.animations.add(new BloodAnimation(x + (float) Math.random() * 80 - 40, y + (float) Math.random() * 80 - 40, context));
-
-
-	}
-
 	public void die() {
 		context.increaseScore(getReward());
-		createCorpse();
+		createDeadDecalsAmdAnimations();
 	}
 
 	public int getReward() {
