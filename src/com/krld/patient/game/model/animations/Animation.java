@@ -17,7 +17,7 @@ public abstract class Animation extends Unit {
 	Animation(float x, float y, GameView context) {
 		super(x, y, context);
 		birthDateMs = System.currentTimeMillis();
-		lifeTimeMax = 5.5f;
+		lifeTimeMax = 0.5f;
 		frameIndex = 0;
 		stop = false;
 	}

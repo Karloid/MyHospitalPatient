@@ -7,6 +7,10 @@ import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import com.krld.patient.game.model.Unit;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MenuView extends FrameLayout implements ActiveView {
 
@@ -69,9 +73,17 @@ public class MenuView extends FrameLayout implements ActiveView {
 	}
 
 	private void drawerLoop() {
+		long currentTime;
+		long lastTime = System.currentTimeMillis();
+		float delta;
+		long delay;
 		try {
 			while (true) {
-				mBackground.update();
+				currentTime = System.currentTimeMillis();
+				delta = (currentTime - lastTime) / 1000f;
+				lastTime = currentTime;
+
+				mBackground.update(delta);
 				mBackground.postInvalidate();
 				Thread.sleep(BACKGROUND_DRAW_DELAY);
 			}

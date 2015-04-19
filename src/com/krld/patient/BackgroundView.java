@@ -2,26 +2,30 @@ package com.krld.patient;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import com.krld.patient.game.model.Point;
+import com.krld.patient.game.model.Unit;
 import com.krld.patient.game.model.animations.Animation;
 import com.krld.patient.game.model.animations.CloudAnimation;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class BackgroundView extends View implements View.OnTouchListener {
 	public static final float CLOUD_RECREATE_RATIO = 0.4f;
 	private int mEndColor;
 	private List<Level> mLevels;
-	private Collection<Animation> animations;
+	private List<Animation> animations;
+	private List<Animation> animationsCopy;
 	private int currentTick;
 	private Paint paint;
+	private Point touchPoint;
 
 	public BackgroundView(Context context) {
 		super(context);
@@ -53,10 +57,9 @@ public class BackgroundView extends View implements View.OnTouchListener {
 		}
 		drawEnd(canvas, paint);
 		drawLevels(canvas, paint);
-		drawAnimation(canvas, paint);
+		drawDrawable(animationsCopy, canvas, paint);
 		drawFade(canvas, paint);
 		drawVersionCode(canvas, paint);
-		removeAnim();
 	}
 
 	private void drawVersionCode(Canvas canvas, Paint paint) {
@@ -81,26 +84,16 @@ public class BackgroundView extends View implements View.OnTouchListener {
 		canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), paint);
 	}
 
-	private void removeAnim() {
-		List<Animation> deadAnimations = new ArrayList<Animation>();
-		for (Animation animation : animations) {
-			if (!animation.checkAlive()) {
-				deadAnimations.add(animation);
-			}
-		}
-		for (Animation deadAnim : deadAnimations) {
-			if (Math.random() < CLOUD_RECREATE_RATIO) {
-				animations.add(new CloudAnimation(deadAnim.x, deadAnim.y, null)
-				);
-			}
-		}
-		animations.removeAll(deadAnimations);
 
-	}
-
-	private void drawAnimation(Canvas canvas, Paint paint) {
-		for (Animation anim : animations) {
-			anim.draw(canvas, paint);
+	private void drawDrawable(List<? extends Unit> drawables, Canvas canvas, Paint paint) {
+		List<? extends Unit> localDrawables = drawables;
+		if (localDrawables == null) {
+			return;
+		}
+		for (Unit drawable : localDrawables) {
+			if (!drawable.isVisible()) continue;
+			Bitmap bitmap = drawable.getBitmap();
+			canvas.drawBitmap(bitmap, drawable.x, drawable.y, paint);
 		}
 	}
 
@@ -122,23 +115,51 @@ public class BackgroundView extends View implements View.OnTouchListener {
 		canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), paint);
 	}
 
-	public void update() {
+	public void update(float delta) {
+		addNewAnimations(delta);
+		moveUnits(delta, animations);
+		animationsCopy = new ArrayList<Animation>(animations);
 		if (mLevels != null)
 			for (Level level : mLevels) {
-				level.update();
+				level.update(delta);
 			}
+	}
+
+	private void addNewAnimations(float delta) {
+		Point currentTouchPoint = touchPoint;
+		if (currentTouchPoint == null) return;
+		touchPoint = null;
+		int disp = 100;
+		int dispDiv2 = disp / 2;
+		for (int i = 0; i < 3; i++) {
+			animations.add(new CloudAnimation(currentTouchPoint.getX() + (float) Math.random() * disp - dispDiv2,
+					currentTouchPoint.getY() + (float) Math.random() * disp - dispDiv2, null));
+		}
 	}
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		int disp = 100;
-		int dispDiv2 = disp / 2;
-		for (int i = 0; i < 3; i++) {
-			animations.add(new CloudAnimation(event.getX() + (float) Math.random() * disp - dispDiv2,
-					event.getY() + (float) Math.random() * disp - dispDiv2, null));
-		}
+		touchPoint = new Point(event.getX(), event.getY());
 		return true;
 	}
+
+	private void moveUnits(float delta, List<? extends Unit> units) {
+		List<Unit> unitsToRemove = null;
+		for (Unit unit : units) {
+			unit.move(delta);
+			if (unit.needRemove()) {
+				if (unitsToRemove == null) {
+					unitsToRemove = new ArrayList<Unit>();
+				}
+				unitsToRemove.add(unit);
+			}
+		}
+
+		if (unitsToRemove != null) {
+			units.removeAll(unitsToRemove);
+		}
+	}
+
 
 	private class Level {
 		private final int mColor;
@@ -175,11 +196,11 @@ public class BackgroundView extends View implements View.OnTouchListener {
 			}
 		}
 
-		public void update() {
+		public void update(float delta) {
 			for (Rectangle rect : mRectangles) {
 				rect.mY += getSpeed();
 				if (rect.mY > getHeight()) {
-					rect.mY = -mHeight;
+					rect.mY = -mHeight - mHeight / 4;
 				}
 			}
 		}
