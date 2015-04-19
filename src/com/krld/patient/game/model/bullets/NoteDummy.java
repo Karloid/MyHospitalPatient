@@ -14,6 +14,7 @@ public class NoteDummy extends Creep {
 	NoteDummy(float x, float y, GameView context) {
 		super(x, y, context);
 		speed = 0;
+		visible = false;
 	}
 
 	public void move(float delta) {

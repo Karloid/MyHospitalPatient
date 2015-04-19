@@ -16,6 +16,7 @@ import java.util.List;
 
 public abstract class Unit implements Drawable {
 
+	protected boolean visible;
 	public float x;
 
 	public float y;
@@ -43,6 +44,7 @@ public abstract class Unit implements Drawable {
 		speed = 0;
 		maxHp = 100;
 		hp = maxHp;
+		visible = true;
 	}
 
 	public void draw(Canvas canvas, Paint paint, GameCamera camera) {
@@ -125,4 +127,15 @@ public abstract class Unit implements Drawable {
 			context.animations.add(new BloodAnimation(x + (float) Math.random() * 80 - 40, y + (float) Math.random() * 80 - 40, context));
 	}
 
+	public boolean needRemove() {
+		return false;
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
 }

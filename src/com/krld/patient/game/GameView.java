@@ -287,21 +287,31 @@ public class GameView extends SurfaceView implements ActiveView {
 	}
 
 	private void moveUnits(float delta) {
-		List<Creep> creepыToRemove = null;
-		for (Creep creep : creeps) {
-			creep.move(delta);
-			if (creep.needRemove()) {
-				if (creepыToRemove == null) {
-					creepыToRemove = new ArrayList<Creep>();
+		removeCreeps(delta);
+
+		removeBullets(delta);
+
+		removeAnimations(delta);
+	}
+
+	private void removeAnimations(float delta) {
+		List<Unit> unitsToRemove = null;
+		for (Unit unit : animations) {
+			unit.move(delta);
+			if (unit.needRemove()) {
+				if (unitsToRemove == null) {
+					unitsToRemove = new ArrayList<Unit>();
 				}
-				creepыToRemove.add(creep);
+				unitsToRemove.add(unit);
 			}
 		}
 
-		if (creepыToRemove != null) {
-			creeps.removeAll(creepыToRemove);
+		if (unitsToRemove != null) {
+			animations.removeAll(unitsToRemove);
 		}
+	}
 
+	private void removeBullets(float delta) {
 		List<Bullet> bulletsToRemove = new ArrayList<Bullet>();
 		long currentTimeMillis = System.currentTimeMillis();
 		for (Bullet bullet : bullets) {
@@ -314,6 +324,23 @@ public class GameView extends SurfaceView implements ActiveView {
 			bullet.postAction();
 		}
 		bullets.removeAll(bulletsToRemove);
+	}
+
+	private void removeCreeps(float delta) {
+		List<Creep> creepsToRemove = null;
+		for (Creep creep : creeps) {
+			creep.move(delta);
+			if (creep.needRemove()) {
+				if (creepsToRemove == null) {
+					creepsToRemove = new ArrayList<Creep>();
+				}
+				creepsToRemove.add(creep);
+			}
+		}
+
+		if (creepsToRemove != null) {
+			creeps.removeAll(creepsToRemove);
+		}
 	}
 
 	private void spawnBonuses(float delta) {   //TODO rework

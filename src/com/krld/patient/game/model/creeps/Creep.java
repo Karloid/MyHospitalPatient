@@ -20,10 +20,6 @@ public abstract class Creep extends Unit {
 			context.animations.add(new CloudAnimation(x + (float) Math.random() * 80 - 40, y + (float) Math.random() * 80 - 40, context));
 	}
 
-	public boolean needRemove() {
-		return false;
-	}
-
 	public void attackPlayer() {
 
 	}

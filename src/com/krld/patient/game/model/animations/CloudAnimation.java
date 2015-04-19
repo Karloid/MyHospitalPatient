@@ -24,7 +24,7 @@ public class CloudAnimation extends Animation {
 	}
 
 	public Bitmap getFrame() {
-		if (stop) return null;
+		if (stop) throw new RuntimeException("Are u mad?");
 		Bitmap result = sprites.get(getFrameIndex());
 		updateFrameIndex();
 		return result;
@@ -65,7 +65,7 @@ public class CloudAnimation extends Animation {
 
 	private void updateFrameIndex() {
 		frameIndex++;
-		if (frameIndex > sprites.size() - 1) {
+		if (frameIndex >= sprites.size()) {
 			stop = true;
 		}
 	}
@@ -77,5 +77,10 @@ public class CloudAnimation extends Animation {
 
 	public boolean checkAlive() {
 		return !stop;
+	}
+
+	@Override    //TODO extract
+	public boolean needRemove() {
+		return stop;
 	}
 }

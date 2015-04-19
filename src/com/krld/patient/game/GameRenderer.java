@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 import com.krld.patient.R;
 import com.krld.patient.game.camera.GameCamera;
 import com.krld.patient.game.model.Background;
@@ -14,7 +13,6 @@ import com.krld.patient.game.model.Unit;
 import com.krld.patient.game.model.bullets.Bullet;
 import com.krld.patient.game.model.effects.Effect;
 
-import java.util.Iterator;
 import java.util.List;
 
 import static com.krld.patient.game.UIConstants.*;
@@ -42,13 +40,7 @@ public class GameRenderer {
 		Paint paint = new Paint();
 		background.update(gameView.decals);
 		drawBackground(paint, canvas);
-		try {
-			drawEntities(canvas, paint);
-		} catch (Exception e) {
-			Log.e(GameView.TAG, "" + e.getMessage() + " " + e.getCause());
-			e.printStackTrace();
-			// debugMessage = Utils.getExceptionContent(e);
-		}
+		drawEntities(canvas, paint);
 		drawUI(canvas, paint);
 		drawGradient(canvas, paint);
 	}
@@ -93,14 +85,11 @@ public class GameRenderer {
 		if (drawables == null) {
 			return;
 		}
-		Iterator iter = drawables.iterator();
-		while (iter.hasNext()) {
-			Unit drawable = (Unit) iter.next();
+		for (Unit drawable : drawables) {
+			if (!drawable.isVisible()) continue;
 			Bitmap bitmap = drawable.getBitmap();
-			if (bitmap == null) continue;
 			canvas.drawBitmap(bitmap, drawable.x - camera.getX(), drawable.y - camera.getY(), paint);
 		}
-
 	}
 
 	private void drawPlayer(Canvas canvas, Paint paint) {

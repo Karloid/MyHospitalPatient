@@ -78,4 +78,9 @@ public class BloodAnimation extends Animation {
 	public boolean checkAlive() {
 		return !stop;
 	}
+
+	@Override    //TODO extract
+	public boolean needRemove() {
+		return stop;
+	}
 }
