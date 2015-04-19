@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.graphics.*;
 import android.graphics.BitmapFactory.Options;
 import com.krld.patient.game.model.Unit;
+import com.krld.patient.game.model.Point;
 
 public class Utils {
 
@@ -37,6 +38,18 @@ public class Utils {
 
 	public static double getDistance(Unit unit1, Unit unit2) {
 		return getDistance(unit1.x, unit1.y, unit2.x, unit2.y);
+	}
+
+	public static double getDistance(Point point1, Unit unit2) {
+		return getDistance(point1.getX(), point1.getY(), unit2.x, unit2.y);
+	}
+
+	public static double getDistance(Point point1, Point point2) {
+		return getDistance(point1.getX(), point1.getY(), point2.getX(), point2.getY());
+	}
+
+	public static double getDistance(Unit unit1, Point point2) {
+		return getDistance(unit1.x, unit1.y, point2.getX(), point2.getY());
 	}
 
 	public static double getDistance(float x1, float y1, float x2, float y2) {

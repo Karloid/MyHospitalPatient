@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import com.krld.patient.game.Utils;
 import com.krld.patient.game.camera.GameCamera;
+import com.krld.patient.game.model.Point;
 import com.krld.patient.game.model.Unit;
 import com.krld.patient.game.model.bullets.Bullet;
 import com.krld.patient.game.model.creeps.Creep;
@@ -24,19 +25,25 @@ public class BombEffect extends Effect {
 		effectCurrentRadius = effectStartRadius;
 		durationTime = 0.3f;
 		effectMaxRadius = 200;
+
+		float cx = owner.x;
+		float cy = owner.y;
+		position = new Point(cx, cy);
+
 		owner.context.decals.add(new BombSpot(owner.x, owner.y, owner.context));
 	}
 
 	public void draw(Canvas canvas, Paint paint, GameCamera camera) {
 		paint.setColor(Color.RED);
 		paint.setAlpha(200);
-		float cx = owner.x - camera.getX();
-		float cy = owner.y + yCorrection - camera.getY();
+		float cx = position.getX() - camera.getX();
+		float cy = position.getY() - camera.getY();
 		canvas.drawCircle(cx, cy, effectCurrentRadius, paint);
 		paint.setColor(Color.YELLOW);
 		paint.setAlpha(88);
 		canvas.drawCircle(cx, cy, effectCurrentRadius / 5, paint);
 		paint.setAlpha(255);
+
 	}
 
 	public void doEffect(float delta) {
@@ -44,7 +51,7 @@ public class BombEffect extends Effect {
 
 		List<Creep> unitsToRemove = null;
 		for (Creep creep : owner.context.creeps) {
-			if (Utils.getDistance(owner, creep) < effectCurrentRadius) {
+			if (Utils.getDistance(position, creep) < effectCurrentRadius) {
 				if (unitsToRemove == null)
 					unitsToRemove = new ArrayList<Creep>();
 				creep.die();

@@ -30,8 +30,7 @@ public class Note extends Bullet {
 
 	private static float touchDmg = 10;
 
-	public Note(float x, float y
-			, GameView context, Unit target) {
+	public Note(float x, float y, GameView context, Unit target) {
 		super(x, y, context);
 		speed = SPEED;
 		size = 10;
