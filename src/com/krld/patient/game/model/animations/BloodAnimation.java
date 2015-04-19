@@ -15,49 +15,22 @@ import java.util.List;
 public class BloodAnimation extends Animation {
 
 	private byte frameIndex;
-
 	private boolean stop;
 	public static final int SCALE_FACTOR = 4;
-
-	public byte getFrameIndex() {
-		return frameIndex;
-	}
-
-	public Bitmap getFrame() {
-		if (stop) return null;
-		Bitmap result = sprites.get(getFrameIndex());
-		updateFrameIndex();
-		return result;
-	}
-
-	private void updateFrameIndex() {
-		frameIndex++;
-		if (frameIndex > sprites.size() - 1) {
-			stop = true;
-		}
-	}
 
 	public static List<Bitmap> sprites;
 
 	public BloodAnimation(float x, float y, GameView context) {
 		super(x, y, context);
-		birthDate = System.currentTimeMillis();
-		frameIndex = 0;
-		stop = false;
 	}
 
 	public static void init(Resources resources) {
 		sprites = new ArrayList<Bitmap>();
 		sprites.add(Utils.loadSprite(R.raw.bloodanim0, resources, SCALE_FACTOR));
-
 		sprites.add(Utils.loadSprite(R.raw.bloodanim1, resources, SCALE_FACTOR));
-
 		sprites.add(Utils.loadSprite(R.raw.bloodanim2, resources, SCALE_FACTOR));
-
 		sprites.add(Utils.loadSprite(R.raw.bloodanim3, resources, SCALE_FACTOR));
-
 		sprites.add(Utils.loadSprite(R.raw.bloodanim4, resources, SCALE_FACTOR));
-
 		sprites.add(Utils.loadSprite(R.raw.bloodanim5, resources, SCALE_FACTOR));
 	}
 
@@ -71,16 +44,7 @@ public class BloodAnimation extends Animation {
 	}
 
 	@Override
-	public Bitmap getBitmap() {
-		return getFrame();
-	}
-
-	public boolean checkAlive() {
-		return !stop;
-	}
-
-	@Override    //TODO extract
-	public boolean needRemove() {
-		return stop;
+	protected List<Bitmap> getSprites() {
+		return sprites;
 	}
 }

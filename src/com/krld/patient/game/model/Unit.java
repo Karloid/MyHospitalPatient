@@ -63,6 +63,10 @@ public abstract class Unit implements Drawable {
 	}
 
 	public void move(float delta) {
+		positionUpdate(delta);
+	}
+
+	protected void positionUpdate(float delta) {
 		if (moveX == null || moveY == null || speed == 0)
 			return;
 		float realSpeed = speed * delta;
@@ -85,7 +89,6 @@ public abstract class Unit implements Drawable {
 			x = newX;
 			y = newY;
 		}
-
 	}
 
 	public void collect(float delta) {

@@ -233,7 +233,7 @@ public class GameView extends SurfaceView implements ActiveView {
 				return;
 			tick++;
 			gameContentUpdate(delta);
-			moveUnits(delta);
+			moveMainUnits(delta);
 			player.move(delta);
 			player.collect(delta);
 			updateDrawCollections(delta);
@@ -286,17 +286,15 @@ public class GameView extends SurfaceView implements ActiveView {
 		editor.apply();
 	}
 
-	private void moveUnits(float delta) {
+	private void moveMainUnits(float delta) {
 		removeCreeps(delta);
-
 		removeBullets(delta);
-
-		removeAnimations(delta);
+		moveUnits(delta, animations);
 	}
 
-	private void removeAnimations(float delta) {
+	private void moveUnits(float delta, List<? extends Unit> units) {
 		List<Unit> unitsToRemove = null;
-		for (Unit unit : animations) {
+		for (Unit unit : units) {
 			unit.move(delta);
 			if (unit.needRemove()) {
 				if (unitsToRemove == null) {
@@ -307,7 +305,7 @@ public class GameView extends SurfaceView implements ActiveView {
 		}
 
 		if (unitsToRemove != null) {
-			animations.removeAll(unitsToRemove);
+			units.removeAll(unitsToRemove);
 		}
 	}
 
