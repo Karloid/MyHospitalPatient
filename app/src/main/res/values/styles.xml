@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="BaseButton">
         <item name="android:layout_width">@dimen/button_width</item>
         <item name="android:layout_height">@dimen/button_height</item>
         <item name="android:layout_margin">@dimen/margin_default</item>
         <item name="android:padding">@dimen/padding_buttons</item>
+        <item name="android:textColor">@color/white</item>
         <item name="android:background">@drawable/selector_button_backgroud</item>
         <item name="android:textSize">@dimen/textSize_large</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="AppTheme" parent="@style/Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/black2</item>
+        <item name="colorPrimaryDark">@color/black</item>
+    </style>
+
+    <color name="white">#fff</color>
+    <color name="black">#000</color>
+    <color name="black2">#484848</color>
 </resources>

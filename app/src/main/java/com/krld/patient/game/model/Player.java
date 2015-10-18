@@ -38,7 +38,7 @@ public class Player extends Unit {
 		hp = 55;
 		decayDmg = 1;
 		lives = 3;
-		deadDurationMax = 4;
+		deadDurationMax = 3;
 
 		effects = new ArrayList<Effect>();
 		effects.add(new ShieldEffect(this));
@@ -88,7 +88,7 @@ public class Player extends Unit {
 		deadDuration = 0;
 		moveX = null;
 		moveY = null;
-		createDeadDecalsAmdAnimations();
+		createDeadDecalsAndAnimations();
 	}
 
 	private void resurrect(float delta) {
@@ -131,7 +131,7 @@ public class Player extends Unit {
 		return isDead;
 	}
 
-	public void createDeadDecalsAmdAnimations() {
+	public void createDeadDecalsAndAnimations() {
 		for (int i = 0; i < 10; i++)
 			context.decals.add(new BloodSpot(x + (float) Math.random() * 80 - 40, y + (float) Math.random() * 80 - 40, context));
 		for (int i = 0; i < 14; i++)

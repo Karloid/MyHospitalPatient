@@ -2,9 +2,7 @@ package com.krld.patient.game.model.creeps;
 
 import com.krld.patient.game.GameView;
 import com.krld.patient.game.model.Unit;
-import com.krld.patient.game.model.animations.BloodAnimation;
 import com.krld.patient.game.model.animations.CloudAnimation;
-import com.krld.patient.game.model.decals.BloodSpot;
 
 public abstract class Creep extends Unit {
 
@@ -26,7 +24,7 @@ public abstract class Creep extends Unit {
 
 	public void die() {
 		context.increaseScore(getReward());
-		createDeadDecalsAmdAnimations();
+		createDeadDecalsAndAnimations();
 	}
 
 	public int getReward() {

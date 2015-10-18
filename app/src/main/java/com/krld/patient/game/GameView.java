@@ -5,13 +5,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.EditText;
 
 import com.krld.patient.ActiveView;
+import com.krld.patient.Application;
+import com.krld.patient.R;
 import com.krld.patient.game.camera.GameCamera;
 import com.krld.patient.game.model.Background;
 import com.krld.patient.game.model.Player;
@@ -36,7 +41,6 @@ import java.util.List;
 
 public class GameView extends SurfaceView implements ActiveView {
     public static final float WIDTH_BASIS = 540f;
-    static final String TAG = "PLOG";
     public static final int DEFAULT_SCALE_FACTOR = 6;
     public static final int DEFAULT_SCALE_FACTOR_FOR_BONUS = 4;
     public static final int NURSE_SPAWN_COOLDOWN = 6000;
@@ -110,7 +114,7 @@ public class GameView extends SurfaceView implements ActiveView {
     }
 
     private void initGame() {
-        Log.i(TAG, "INIT");
+        Log.i(Application.TAG, "INIT");
         debugMessage = "";
         score = 0;
         tick = 0;
@@ -156,7 +160,7 @@ public class GameView extends SurfaceView implements ActiveView {
                 delay = TIME_BETWEEN_TICKS - (System.currentTimeMillis() - currentTime);
                 Thread.sleep((delay < 0 ? 0 : delay));
             } catch (InterruptedException e) {
-                Log.d(TAG, "stopped");
+                Log.d(Application.TAG, "stopped");
                 return;
             }
         }
@@ -237,6 +241,7 @@ public class GameView extends SurfaceView implements ActiveView {
             updateDrawCollections(delta);
             checkGameOver(delta);
         } catch (Exception e) {
+            e.printStackTrace();
             debugMessage = Utils.getExceptionContent(e);
         }
     }
@@ -276,7 +281,22 @@ public class GameView extends SurfaceView implements ActiveView {
                 saveBestScore();
             }
 
-
+            if (!Application.getAllScores().isNewRecord(score)) {
+                return;
+            }
+            post(() -> {
+                View layout = LayoutInflater.from(getContext()).inflate(R.layout.new_record, null);
+                EditText editText = (EditText) layout.findViewById(R.id.edit_text);
+                editText.setText(Application.getLastPlayerName());
+                new AlertDialog.Builder(getContext()).setView(layout)
+                        .setTitle(R.string.new_record_enter_your_name)
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                            Application.getAllScores().saveScore(editText.getText().toString(), score);
+                        })
+                        .setOnCancelListener(dialog1 -> Application.getAllScores().saveScore(editText.getText().toString(), score))
+                        .create()
+                        .show();
+            });
         }
     }
 
@@ -416,7 +436,7 @@ public class GameView extends SurfaceView implements ActiveView {
         runner.interrupt();
         try {
             runner.join();
-            Log.i(TAG, "Runner has terminated");
+            Log.i(Application.TAG, "Runner has terminated");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -425,7 +445,7 @@ public class GameView extends SurfaceView implements ActiveView {
     public void onResume() {
         if (runner != null && !runner.isAlive()) {
             createAndStartRunner();
-            Log.i(TAG, "Runner has started");
+            Log.i(Application.TAG, "Runner has started");
         } else {
             updateSurface(0);
         }
