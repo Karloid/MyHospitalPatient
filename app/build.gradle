@@ -17,8 +17,8 @@ android {
         applicationId "com.krld.mypatient"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode 9
+        versionName "1.8"
     }
 
     compileOptions {

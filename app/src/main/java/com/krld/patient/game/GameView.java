@@ -41,6 +41,7 @@ public class GameView extends SurfaceView implements ActiveView {
 	public static final int NURSE_SPAWN_COOLDOWN = 6000;
 	private static final String BEST_SCORE_KEY = "BEST_SCORE_KEY";
 	public static final int TIME_BETWEEN_TICKS = 50;
+	static final long DELAY_GAME_OVER_SKIP = 1000;
 	private final SurfaceHolder holder;
 
 	public Player player;
@@ -81,6 +82,7 @@ public class GameView extends SurfaceView implements ActiveView {
 	private GameCamera camera;
 
 	private long lastSpawnBonuses;
+	private long gameOverTime;
 
 
 	public GameView(Context context) {
@@ -128,12 +130,10 @@ public class GameView extends SurfaceView implements ActiveView {
 	}
 
 	private void createAndStartRunner() {
-		runner = new Thread(new Runnable() {
-			public void run() {
-				updateLoop();
-			}
+		if (runner != null) {
+			runner.interrupt();
 		}
-		);
+		runner = new Thread(this::updateLoop);
 		runner.start();
 	}
 
@@ -143,23 +143,19 @@ public class GameView extends SurfaceView implements ActiveView {
 		float delta;
 		long delay;
 		while (true) {
-			if (this.gameOver) {
-				return;
-			}
+
 			currentTime = System.currentTimeMillis();
 			delta = (currentTime - lastTime) / 1000f;
 			lastTime = currentTime;
-
-			this.update(delta);
-
-			this.updateSurface(delta);
-			if (this.gameOver) {
-				return;
+			if (!gameOver) {
+				this.update(delta);
 			}
+			this.updateSurface(delta);
 			try {
 				delay = TIME_BETWEEN_TICKS - (System.currentTimeMillis() - currentTime);
 				Thread.sleep((delay < 0 ? 0 : delay));
 			} catch (InterruptedException e) {
+				Log.d(TAG, "stopped");
 				return;
 			}
 		}
@@ -203,6 +199,7 @@ public class GameView extends SurfaceView implements ActiveView {
 		fitCanvas(canvas);
 		camera.setX(player.x - camera.getWidth() / 2);
 		camera.setY(player.y - camera.getHeight() / 2);
+
 		gameRenderer.drawMain(canvas, camera);
 	}
 
@@ -272,7 +269,8 @@ public class GameView extends SurfaceView implements ActiveView {
 	private void checkGameOver(float delta) {
 		if (player.lives == 0) {
 			gameOver = true;
-			if (score > bestScore) {
+			gameOverTime = System.currentTimeMillis();
+			if (score >= bestScore) {
 				bestScore = score;
 				saveBestScore();
 			}
@@ -451,6 +449,10 @@ public class GameView extends SurfaceView implements ActiveView {
 		return legalX && legalY;
 	}
 
+	public long getGameOverTime() {
+		return gameOverTime;
+	}
+
 	private class MyOnTouchListener implements OnTouchListener {
 		@Override
 		public boolean onTouch(View view, MotionEvent event) {
@@ -458,7 +460,7 @@ public class GameView extends SurfaceView implements ActiveView {
 			float x = event.getX() / canvasScale + camera.getX();
 			float y = event.getY() / canvasScale + camera.getY();
 			player.moveTo(x, y);
-			if (gameOver) {
+			if (gameOver &&  System.currentTimeMillis() - gameOverTime > DELAY_GAME_OVER_SKIP) {
 				gameOver = false;
 				initGame();
 			}
