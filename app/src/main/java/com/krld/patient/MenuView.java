@@ -7,10 +7,6 @@ import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import com.krld.patient.game.model.Unit;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MenuView extends FrameLayout implements ActiveView {
 
