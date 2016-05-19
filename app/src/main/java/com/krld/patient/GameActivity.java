@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.krld.patient.game.GameView;
@@ -13,7 +16,7 @@ import com.krld.patient.views.RatingView;
 
 public class GameActivity extends Activity {
 
-    private LinearLayout mLayout;
+    private FrameLayout mLayout;
     private MenuView mMenuView;
     private GameView mGameView;
 
@@ -27,15 +30,17 @@ public class GameActivity extends Activity {
         setContentView(R.layout.main);
 
         mMenuView = new MenuView(this);
-        mLayout = (LinearLayout) findViewById(R.id.layout);
+        mLayout = (FrameLayout) findViewById(R.id.layout);
         show(mMenuView);
     }
 
     private void show(ActiveView view) {
         if (mActiveView != null) {
-            mActiveView.onPause();
+            ActiveView previousView = mActiveView;
+            previousView.onPause();
+
+            Application.handler.postDelayed(() -> mLayout.removeView(previousView.getView()), 400);
         }
-        mLayout.removeAllViews();
         mLayout.addView(view.getView());
         mActiveView = view;
         mActiveView.onResume();

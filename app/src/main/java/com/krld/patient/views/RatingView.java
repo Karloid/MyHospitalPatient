@@ -3,7 +3,6 @@ package com.krld.patient.views;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 
 import com.krld.patient.GameActivity;
@@ -11,10 +10,6 @@ import com.krld.patient.R;
 
 public class RatingView extends FrameLayout implements ActiveView {
 
-
-    private Button mPlay;
-    private Button mRatings;
-    private Button mSettings;
     private BackgroundView mBackground;
 
     public RatingView(Context gameActivity) {
@@ -28,26 +23,13 @@ public class RatingView extends FrameLayout implements ActiveView {
     }
 
     private void init() {
-        inflate(getContext(), R.layout.general_menu, this);
+        inflate(getContext(), R.layout.rating_v, this);
 
         mBackground = (BackgroundView) findViewById(R.id.generalMenu_background);
-        mPlay = (Button) findViewById(R.id.generalMenu_play);
-        mRatings = (Button) findViewById(R.id.generalMenu_ratings);
-        mSettings = (Button) findViewById(R.id.generalMenu_settings);
-
-        mPlay.setOnClickListener(v -> showGameView());
-        mRatings.setOnClickListener(v -> showRatings());
-
-    }
-
-    private void showRatings() {
-        GameActivity activity = (GameActivity) getContext();
-        activity.showRatings();
-    }
-
-    private void showGameView() {
-        GameActivity activity = (GameActivity) getContext();
-        activity.showGame();
+        mBackground.colorFade = 0xffE6A46E;
+        mBackground.colorEnd = 0xff225378;
+        mBackground.colorLevel2 = 0xff1695A3;
+        mBackground.colorLevel3 = 0xffACF0F2;
     }
 
     @Override

@@ -22,7 +22,6 @@ import java.util.List;
 public class BackgroundView extends View implements View.OnTouchListener, ActiveView {
     public static final float CLOUD_RECREATE_RATIO = 0.4f;
     static final long BACKGROUND_DRAW_DELAY = 10;
-    private int mEndColor;
     private List<Level> mLevels;
     private List<Animation> animations;
     private List<Animation> animationsCopy;
@@ -31,27 +30,42 @@ public class BackgroundView extends View implements View.OnTouchListener, Active
     private Point touchPoint;
     private Thread mDrawer;
 
+
+    public int colorFade = Color.BLACK;
+    public int colorEnd;
+    public int colorLevel2;
+    public int colorLevel3;
+
+
     public BackgroundView(Context context) {
         super(context);
+        initDefaultColors();
         init();
     }
 
     public BackgroundView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        initDefaultColors();
         init();
     }
 
     public BackgroundView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        initDefaultColors();
         init();
     }
 
     private void init() {
-        mEndColor = getResources().getColor(R.color.background_end);
-        animations = new ArrayList<Animation>();
+        animations = new ArrayList<>();
         CloudAnimation.init(getResources());
         setOnTouchListener(this);
         paint = new Paint();
+    }
+
+    private void initDefaultColors() {
+        colorEnd = getResources().getColor(R.color.background_end);
+        colorLevel2 = getResources().getColor(R.color.level_2);
+        colorLevel3 = getResources().getColor(R.color.level_3);
     }
 
     @Override
@@ -83,18 +97,17 @@ public class BackgroundView extends View implements View.OnTouchListener, Active
 
         if (alphaLevel < 0) return;
         currentTick++;
-        paint.setColor(Color.BLACK);
+        paint.setColor(colorFade);
         paint.setAlpha(alphaLevel);
         canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), paint);
     }
 
 
     private void drawDrawable(List<? extends Unit> drawables, Canvas canvas, Paint paint) {
-        List<? extends Unit> localDrawables = drawables;
-        if (localDrawables == null) {
+        if (drawables == null) {
             return;
         }
-        for (Unit drawable : localDrawables) {
+        for (Unit drawable : drawables) {
             if (!drawable.isVisible()) continue;
             Bitmap bitmap = drawable.getBitmap();
             canvas.drawBitmap(bitmap, drawable.x, drawable.y, paint);
@@ -102,10 +115,10 @@ public class BackgroundView extends View implements View.OnTouchListener, Active
     }
 
     private void initLevels() {
-        mLevels = new ArrayList<Level>();
+        mLevels = new ArrayList<>();
         //	mLevels.add(new Level(getResources().getColor(R.color.level_1), 20, 20));
-        mLevels.add(new Level(getResources().getColor(R.color.level_2), 5, 86));
-        mLevels.add(new Level(getResources().getColor(R.color.level_3), 3, 130));
+        mLevels.add(new Level(colorLevel2, 5, 86));
+        mLevels.add(new Level(colorLevel3, 3, 130));
     }
 
     private void drawLevels(Canvas canvas, Paint paint) {
@@ -115,14 +128,14 @@ public class BackgroundView extends View implements View.OnTouchListener, Active
     }
 
     private void drawEnd(Canvas canvas, Paint paint) {
-        paint.setColor(mEndColor);
+        paint.setColor(colorEnd);
         canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), paint);
     }
 
     public void update(float delta) {
         addNewAnimations(delta);
         moveUnits(delta, animations);
-        animationsCopy = new ArrayList<Animation>(animations);
+        animationsCopy = new ArrayList<>(animations);
         if (mLevels != null)
             for (Level level : mLevels) {
                 level.update(delta);
@@ -209,6 +222,10 @@ public class BackgroundView extends View implements View.OnTouchListener, Active
         return this;
     }
 
+    public void refreshColors() {
+        initLevels();
+    }
+
 
     private class Level {
         private final int mColor;
@@ -233,7 +250,7 @@ public class BackgroundView extends View implements View.OnTouchListener, Active
         }
 
         public void draw(Canvas canvas, Paint paint) {
-            paint.setColor(Color.BLACK);
+            paint.setColor(colorFade);
             paint.setAlpha(100);
             for (Rectangle rect : mRectangles) {
                 canvas.drawRect(0, rect.mY + mHeight / 4, canvas.getWidth(), rect.mY + mHeight + mHeight / 4, paint);
