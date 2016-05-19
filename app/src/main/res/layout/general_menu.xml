@@ -23,12 +23,12 @@
         <Button
             android:id="@+id/generalMenu_ratings"
             style="@style/BaseButton"
-            android:enabled="false"
             android:text="@string/label_ratings" />
 
         <Button
             android:id="@+id/generalMenu_settings"
             style="@style/BaseButton"
+            android:visibility="gone"
             android:enabled="false"
             android:text="@string/label_settings" />
 

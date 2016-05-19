@@ -19,8 +19,9 @@ import com.krld.patient.game.model.animations.CloudAnimation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BackgroundView extends View implements View.OnTouchListener {
+public class BackgroundView extends View implements View.OnTouchListener, ActiveView {
     public static final float CLOUD_RECREATE_RATIO = 0.4f;
+    static final long BACKGROUND_DRAW_DELAY = 10;
     private int mEndColor;
     private List<Level> mLevels;
     private List<Animation> animations;
@@ -28,6 +29,7 @@ public class BackgroundView extends View implements View.OnTouchListener {
     private int currentTick;
     private Paint paint;
     private Point touchPoint;
+    private Thread mDrawer;
 
     public BackgroundView(Context context) {
         super(context);
@@ -148,23 +150,63 @@ public class BackgroundView extends View implements View.OnTouchListener {
     private void moveUnits(float delta, List<? extends Unit> units) {
         try {
 
-        List<Unit> unitsToRemove = null;
-        for (Unit unit : units) {
-            unit.move(delta);
-            if (unit.needRemove()) {
-                if (unitsToRemove == null) {
-                    unitsToRemove = new ArrayList<Unit>();
+            List<Unit> unitsToRemove = null;
+            for (Unit unit : units) {
+                unit.move(delta);
+                if (unit.needRemove()) {
+                    if (unitsToRemove == null) {
+                        unitsToRemove = new ArrayList<Unit>();
+                    }
+                    unitsToRemove.add(unit);
                 }
-                unitsToRemove.add(unit);
             }
-        }
 
-        if (unitsToRemove != null) {
-            units.removeAll(unitsToRemove);
-        }
+            if (unitsToRemove != null) {
+                units.removeAll(unitsToRemove);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void createDrawerThread() {
+        mDrawer = new Thread(this::drawerLoop);
+        mDrawer.start();
+    }
+
+    private void drawerLoop() {
+        long currentTime;
+        long lastTime = System.currentTimeMillis();
+        float delta;
+        long delay;
+        try {
+            while (true) {
+                currentTime = System.currentTimeMillis();
+                delta = (currentTime - lastTime) / 1000f;
+                lastTime = currentTime;
+
+                update(delta);
+                postInvalidate();
+                Thread.sleep(BackgroundView.BACKGROUND_DRAW_DELAY);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        mDrawer.interrupt();
+    }
+
+    @Override
+    public void onResume() {
+        createDrawerThread();
+    }
+
+    @Override
+    public View getView() {
+        return this;
     }
 
 

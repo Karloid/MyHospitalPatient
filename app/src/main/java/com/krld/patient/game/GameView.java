@@ -452,6 +452,11 @@ public class GameView extends SurfaceView implements ActiveView {
         }
     }
 
+    @Override
+    public View getView() {
+        return this;
+    }
+
     public long getTick() {
         return tick;
     }

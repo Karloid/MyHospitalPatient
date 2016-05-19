@@ -2,8 +2,6 @@ package com.krld.patient.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -11,25 +9,21 @@ import android.widget.FrameLayout;
 import com.krld.patient.GameActivity;
 import com.krld.patient.R;
 
-public class MenuView extends FrameLayout implements ActiveView {
+public class RatingView extends FrameLayout implements ActiveView {
+
 
     private Button mPlay;
     private Button mRatings;
     private Button mSettings;
     private BackgroundView mBackground;
 
-    public MenuView(Context gameActivity) {
+    public RatingView(Context gameActivity) {
         super(gameActivity);
         init();
     }
 
-    public MenuView(Context context, AttributeSet attrs) {
+    public RatingView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
-    }
-
-    public MenuView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
         init();
     }
 
@@ -58,7 +52,7 @@ public class MenuView extends FrameLayout implements ActiveView {
 
     @Override
     public void onPause() {
-       mBackground.onPause();
+        mBackground.onPause();
     }
 
     @Override
