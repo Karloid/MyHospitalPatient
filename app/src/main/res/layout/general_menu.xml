@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.krld.patient.BackgroundView
+    <com.krld.patient.views.BackgroundView
         android:id="@+id/generalMenu_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

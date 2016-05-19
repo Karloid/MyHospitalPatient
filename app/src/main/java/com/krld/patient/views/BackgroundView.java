@@ -1,4 +1,4 @@
-package com.krld.patient;
+package com.krld.patient.views;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.krld.patient.R;
 import com.krld.patient.game.model.Point;
 import com.krld.patient.game.model.Unit;
 import com.krld.patient.game.model.animations.Animation;

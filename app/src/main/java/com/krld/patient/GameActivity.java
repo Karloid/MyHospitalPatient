@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
 import com.krld.patient.game.GameView;
+import com.krld.patient.views.ActiveView;
+import com.krld.patient.views.MenuView;
 
 public class GameActivity extends Activity {
 

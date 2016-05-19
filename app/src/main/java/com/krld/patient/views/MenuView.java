@@ -1,4 +1,4 @@
-package com.krld.patient;
+package com.krld.patient.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -7,6 +7,9 @@ import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+
+import com.krld.patient.GameActivity;
+import com.krld.patient.R;
 
 public class MenuView extends FrameLayout implements ActiveView {
 
@@ -59,12 +62,7 @@ public class MenuView extends FrameLayout implements ActiveView {
 	}
 
 	private void createDrawerThread() {
-		mDrawer = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				drawerLoop();
-			}
-		});
+		mDrawer = new Thread(this::drawerLoop);
 		mDrawer.start();
 	}
 

@@ -1,4 +1,4 @@
-package com.krld.patient;
+package com.krld.patient.models;
 
 public class PlayerScore {
     public String playerName;

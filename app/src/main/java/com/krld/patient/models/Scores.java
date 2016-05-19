@@ -1,14 +1,15 @@
-package com.krld.patient;
+package com.krld.patient.models;
 
-import android.appwidget.AppWidgetProvider;
 import android.util.Log;
+
+import com.krld.patient.Application;
 
 import java.util.Collections;
 import java.util.List;
 
 public class Scores {
     private static final int MAX_SIZE = 5;
-    List<PlayerScore> allScores;
+    public List<PlayerScore> allScores;
 
     public void addScore(PlayerScore playerScore) {
         allScores.add(playerScore);

@@ -14,7 +14,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.EditText;
 
-import com.krld.patient.ActiveView;
+import com.krld.patient.Constants;
+import com.krld.patient.views.ActiveView;
 import com.krld.patient.Application;
 import com.krld.patient.R;
 import com.krld.patient.game.camera.GameCamera;
@@ -44,18 +45,17 @@ public class GameView extends SurfaceView implements ActiveView {
     public static final int DEFAULT_SCALE_FACTOR = 6;
     public static final int DEFAULT_SCALE_FACTOR_FOR_BONUS = 4;
     public static final int NURSE_SPAWN_COOLDOWN = 6000;
-    private static final String BEST_SCORE_KEY = "BEST_SCORE_KEY";
     public static final int TIME_BETWEEN_TICKS = 50;
     static final long DELAY_GAME_OVER_SKIP = 1000;
     private final SurfaceHolder holder;
 
     public Player player;
 
-    public List<Bonus> bonuses;
-    public List<Creep> creeps;
-    public List<Bullet> bullets;
-    public List<Decal> decals;
-    public List<Animation> animations;
+    public List<Bonus> bonuses = new ArrayList<>();
+    public List<Creep> creeps = new ArrayList<>();
+    public List<Bullet> bullets = new ArrayList<>();
+    public List<Decal> decals = new ArrayList<>();
+    public List<Animation> animations = new ArrayList<>();
 
     public int score;
 
@@ -96,6 +96,7 @@ public class GameView extends SurfaceView implements ActiveView {
         holder.addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
+                updateDrawCollections(0);
                 updateSurface(0);
             }
 
@@ -124,12 +125,12 @@ public class GameView extends SurfaceView implements ActiveView {
         gameRenderer.setBackground(background);
         gameOver = false;
         player = new Player(WIDTH_BASIS / 2, gameHeight / 2, this);
-        bonuses = new LinkedList<Bonus>();
-        creeps = new LinkedList<Creep>();
+        bonuses = new LinkedList<>();
+        creeps = new LinkedList<>();
         nurseSpawnCoolDown = NURSE_SPAWN_COOLDOWN;
-        bullets = new LinkedList<Bullet>();
-        decals = new LinkedList<Decal>();
-        animations = new LinkedList<Animation>();
+        bullets = new LinkedList<>();
+        decals = new LinkedList<>();
+        animations = new LinkedList<>();
         //	final MediaPlayer mp = MediaPlayer.create(context, R.raw.s1);
         createAndStartRunner();
     }
@@ -178,7 +179,7 @@ public class GameView extends SurfaceView implements ActiveView {
 
     private void loadBestScore() {
         SharedPreferences preferences = ((Activity) getContext()).getPreferences(Context.MODE_PRIVATE);
-        bestScore = preferences.getInt(BEST_SCORE_KEY, 0);
+        bestScore = preferences.getInt(Constants.BEST_SCORE_KEY, 0);
     }
 
     private void initSprites() {
@@ -247,10 +248,10 @@ public class GameView extends SurfaceView implements ActiveView {
     }
 
     private void updateDrawCollections(float delta) {
-        drawBonuses = new ArrayList<Unit>(bonuses);
-        drawCreeps = new ArrayList<Unit>(creeps);
-        drawBullets = new ArrayList<Bullet>(bullets);
-        drawAnimations = new ArrayList<Unit>(animations);
+        drawBonuses = new ArrayList<>(bonuses);
+        drawCreeps = new ArrayList<>(creeps);
+        drawBullets = new ArrayList<>(bullets);
+        drawAnimations = new ArrayList<>(animations);
     }
 
     private void gameContentUpdate(float delta) {
@@ -303,7 +304,7 @@ public class GameView extends SurfaceView implements ActiveView {
     private void saveBestScore() {
         SharedPreferences preferences = ((Activity) getContext()).getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt(BEST_SCORE_KEY, bestScore);
+        editor.putInt(Constants.BEST_SCORE_KEY, bestScore);
         editor.apply();
     }
 

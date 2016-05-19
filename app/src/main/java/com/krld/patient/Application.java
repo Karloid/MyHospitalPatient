@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.krld.patient.models.Scores;
 
 import java.util.ArrayList;
 
