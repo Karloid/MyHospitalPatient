@@ -32,4 +32,11 @@ public class Scores {
         Application.saveScores(this);
 
     }
+
+    public int getBestScore() {
+        if (!allScores.isEmpty()) {
+            return allScores.get(0).score;
+        }
+        return 0;
+    }
 }

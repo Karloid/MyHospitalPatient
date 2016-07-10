@@ -154,12 +154,7 @@ public class Background {
 		String bitmapKey = "bitmap";
 
 		int treesCount = 20;
-		Map<Float, Map<String, Object>> map = new TreeMap<Float, Map<String, Object>>(new Comparator<Float>() {
-			@Override
-			public int compare(Float o1, Float o2) {
-				return o1.compareTo(o2);
-			}
-		});
+		Map<Float, Map<String, Object>> map = new TreeMap<Float, Map<String, Object>>(Float::compareTo);
 		for (int i = 0; i < treesCount; i++) {
 			Bitmap bitmap = wastelandDecals.get(randomIndex(wastelandDecals));
 			int decalXOffset = bitmap.getWidth();
@@ -167,7 +162,7 @@ public class Background {
 			float left = (float) Math.random() * (canvas.getWidth() - decalXOffset);
 			float top = (float) Math.random() * (canvas.getHeight() - decalYOffset);
 
-			Map<String, Object> hashMap = new HashMap<String, Object>();  //TODO model
+			Map<String, Object> hashMap = new HashMap<>();  //TODO model
 			hashMap.put(leftKey, left);
 			hashMap.put(topKey, top);
 			hashMap.put(bitmapKey, bitmap);
@@ -300,5 +295,15 @@ public class Background {
 
 	public int getRealHeight() {
 		return realHeight;
+	}
+
+	public void cleanUp() {
+		if (bitmaps != null) {
+            for (Bitmap[] bitmapsInner : bitmaps) {
+                for (Bitmap bitmap : bitmapsInner) {
+                    bitmap.recycle();
+                }
+            }
+        }
 	}
 }

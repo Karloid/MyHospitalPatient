@@ -116,6 +116,7 @@ public class GameView extends SurfaceView implements ActiveView {
 
     private void initGame() {
         Log.i(Application.TAG, "INIT");
+        cleanUp();
         debugMessage = "";
         score = 0;
         tick = 0;
@@ -133,6 +134,12 @@ public class GameView extends SurfaceView implements ActiveView {
         animations = new LinkedList<>();
         //	final MediaPlayer mp = MediaPlayer.create(context, R.raw.s1);
         createAndStartRunner();
+    }
+
+    private void cleanUp() {
+        if (background != null) {
+            background.cleanUp();
+        }
     }
 
     private void createAndStartRunner() {
@@ -178,8 +185,7 @@ public class GameView extends SurfaceView implements ActiveView {
     }
 
     private void loadBestScore() {
-        SharedPreferences preferences = ((Activity) getContext()).getPreferences(Context.MODE_PRIVATE);
-        bestScore = preferences.getInt(Constants.BEST_SCORE_KEY, 0);
+        bestScore = Application.getAllScores().getBestScore();
     }
 
     private void initSprites() {
@@ -278,8 +284,8 @@ public class GameView extends SurfaceView implements ActiveView {
             gameOver = true;
             gameOverTime = System.currentTimeMillis();
             if (score >= bestScore) {
-                bestScore = score;
-                saveBestScore();
+                /*bestScore = score;
+                saveBestScore();*/
             }
 
             if (!Application.getAllScores().isNewRecord(score)) {
@@ -468,9 +474,6 @@ public class GameView extends SurfaceView implements ActiveView {
 
     public void increaseScore(int reward) {
         score += reward;
-        if (score > getBestScore()) {
-            setBestScore(score);
-        }
     }
 
     public void setBestScore(int bestScore) {
