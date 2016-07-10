@@ -43,6 +43,7 @@ public class GameActivity extends Activity {
         }
         mLayout.addView(view.getView());
         mActiveView = view;
+        mActiveView.onShow();
         mActiveView.onResume();
     }
 

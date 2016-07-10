@@ -39,7 +39,6 @@ public class RatingView extends FrameLayout implements ActiveView {
         mBackground.colorLevel3 = 0xffACF0F2;
 
         mContainer = (LinearLayout) findViewById(R.id.rating_container);
-        refreshData();
     }
 
     private void refreshData() {
@@ -71,5 +70,10 @@ public class RatingView extends FrameLayout implements ActiveView {
     @Override
     public View getView() {
         return this;
+    }
+
+    @Override
+    public void onShow() {
+        refreshData();
     }
 }

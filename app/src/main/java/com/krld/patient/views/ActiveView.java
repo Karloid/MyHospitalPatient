@@ -8,4 +8,6 @@ public interface ActiveView {
 	void onResume();
 
 	View getView();
+
+	void onShow();
 }

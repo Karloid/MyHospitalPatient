@@ -225,6 +225,11 @@ public class BackgroundView extends View implements View.OnTouchListener, Active
         return this;
     }
 
+    @Override
+    public void onShow() {
+
+    }
+
     public void refreshColors() {
         initLevels();
     }

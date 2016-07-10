@@ -70,4 +70,9 @@ public class MenuView extends FrameLayout implements ActiveView {
     public View getView() {
         return this;
     }
+
+    @Override
+    public void onShow() {
+
+    }
 }
