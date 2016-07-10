@@ -39,6 +39,11 @@ public class RatingView extends FrameLayout implements ActiveView {
         mBackground.colorLevel3 = 0xffACF0F2;
 
         mContainer = (LinearLayout) findViewById(R.id.rating_container);
+        refreshData();
+    }
+
+    private void refreshData() {
+        mContainer.removeAllViews();
         Scores scores = Application.getAllScores();
         LayoutInflater inflater = LayoutInflater.from(getContext());
         if (scores.allScores != null && !scores.allScores.isEmpty()) {
@@ -49,7 +54,7 @@ public class RatingView extends FrameLayout implements ActiveView {
                 mContainer.addView(row);
             }
         } else {
-
+            View empty = inflater.inflate(R.layout.rating_li_empty, mContainer, true);
         }
     }
 

@@ -7,5 +7,6 @@
     <string name="label_settings">Settings</string>
     <string name="label_ratings">Ratings</string>
     <string name="new_record_enter_your_name">New record! Enter your name:</string>
+    <string name="empty_smile"><![CDATA[Empty :>]]></string>
 
 </resources>

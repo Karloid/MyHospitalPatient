@@ -5,4 +5,5 @@
     <color name="level_1">#CC9262</color>
     <color name="level_2">#E6A46E</color>
     <color name="level_3">#FFB67A</color>
+    <color name="rating_accent">#ffACF0F2</color>
 </resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/rating_textView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:padding="33dp"
+    android:text="@string/empty_smile"
+    android:textSize="30sp"
+    android:textStyle="bold">
+</TextView>

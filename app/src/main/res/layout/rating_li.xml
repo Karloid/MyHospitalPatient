@@ -3,38 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     android:orientation="horizontal"
     android:paddingBottom="8dp"
     android:paddingLeft="12dp"
     android:paddingRight="12dp"
-    android:paddingTop="8dp"
-    android:clipChildren="false"
-    android:clipToPadding="false">
+    android:paddingTop="8dp">
 
     <TextView
         android:id="@+id/rating_username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:shadowColor="#122b2a"
-        android:shadowDx="1"
-        android:shadowDy="1"
-        android:shadowRadius="20"
-        android:textColor="#ffACF0F2"
-        android:textSize="20sp"
+        style="@style/rating_textView"
         tools:text="Vasiliy" />
 
     <TextView
         android:id="@+id/rating_score"
+        style="@style/rating_textView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:gravity="right"
-        android:padding="8dp"
-        android:shadowColor="#122b2a"
-        android:shadowDx="1"
-        android:shadowDy="1"
-        android:shadowRadius="20"
-        android:textColor="#ffACF0F2"
         android:textSize="20sp"
         android:textStyle="bold"
         tools:text="6300" />
