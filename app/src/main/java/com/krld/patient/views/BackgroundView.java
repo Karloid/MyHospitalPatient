@@ -15,9 +15,12 @@ import com.krld.patient.game.model.Point;
 import com.krld.patient.game.model.Unit;
 import com.krld.patient.game.model.animations.Animation;
 import com.krld.patient.game.model.animations.CloudAnimation;
+import com.krld.patient.utils.AU;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.krld.patient.utils.AU.*;
 
 public class BackgroundView extends View implements View.OnTouchListener, ActiveView {
     public static final float CLOUD_RECREATE_RATIO = 0.4f;
@@ -83,10 +86,10 @@ public class BackgroundView extends View implements View.OnTouchListener, Active
     private void drawVersionCode(Canvas canvas, Paint paint) {
         try {
             String versionName = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0).versionName;
-            paint.setTextSize(35);
+            paint.setTextSize(dp(20));
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(getResources().getColor(R.color.version_text_color));
-            canvas.drawText(versionName, 0, canvas.getHeight() - 5, paint);
+            canvas.drawText(versionName, 0, canvas.getHeight() - dp(2), paint);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -117,8 +120,8 @@ public class BackgroundView extends View implements View.OnTouchListener, Active
     private void initLevels() {
         mLevels = new ArrayList<>();
         //	mLevels.add(new Level(getResources().getColor(R.color.level_1), 20, 20));
-        mLevels.add(new Level(colorLevel2, 5, 86));
-        mLevels.add(new Level(colorLevel3, 3, 130));
+        mLevels.add(new Level(colorLevel2, dp(5), dp(43)));
+        mLevels.add(new Level(colorLevel3, dp(3), dp(70)));
     }
 
     private void drawLevels(Canvas canvas, Paint paint) {

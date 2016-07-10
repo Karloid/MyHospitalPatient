@@ -1,5 +1,6 @@
 package com.krld.patient;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
@@ -62,5 +63,9 @@ public class Application extends android.app.Application {
         SharedPreferences.Editor edit = getSharedPrefs().edit();
         edit.putString(KEY_LAST_PLAYER_NAME, playerName);
         edit.apply();
+    }
+
+    public static Context getInstance() {
+        return instance;
     }
 }
