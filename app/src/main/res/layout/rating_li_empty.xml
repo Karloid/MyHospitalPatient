@@ -7,5 +7,4 @@
     android:padding="33dp"
     android:text="@string/empty_smile"
     android:textSize="30sp"
-    android:textStyle="bold">
-</TextView>
+    android:textStyle="bold"></TextView>

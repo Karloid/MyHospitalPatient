@@ -6,6 +6,7 @@ public class PlayerScore {
 
     public PlayerScore() {
     }
+
     public PlayerScore(String playerName, int score) {
         this.playerName = playerName;
         this.score = score;

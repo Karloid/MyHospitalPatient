@@ -3,11 +3,11 @@ package com.krld.patient.views;
 import android.view.View;
 
 public interface ActiveView {
-	void onPause();
+    void onPause();
 
-	void onResume();
+    void onResume();
 
-	View getView();
+    View getView();
 
-	void onShow();
+    void onShow();
 }

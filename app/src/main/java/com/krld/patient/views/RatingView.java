@@ -9,7 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.krld.patient.Application;
-import com.krld.patient.GameActivity;
 import com.krld.patient.R;
 import com.krld.patient.models.PlayerScore;
 import com.krld.patient.models.Scores;

@@ -36,7 +36,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-
 import com.krld.patient.Application;
 import com.krld.patient.R;
 
@@ -264,7 +263,8 @@ public class AU {
                     return file;
                 }
             } catch (Exception e) {
-                Log.e(LOG_TAG, e.getMessage());;
+                Log.e(LOG_TAG, e.getMessage());
+                ;
             }
         }
         try {
@@ -712,7 +712,7 @@ public class AU {
 
     public static void printKeyHashAndFingerprint() {
 
-        Log.e(LOG_TAG,"fingerprint: " + getCertificateSHA1Fingerprint());
+        Log.e(LOG_TAG, "fingerprint: " + getCertificateSHA1Fingerprint());
         PackageInfo info;
         try {
             info = Application.getInstance().getPackageManager().getPackageInfo(Application.getInstance().getPackageName(), PackageManager.GET_SIGNATURES);
@@ -722,14 +722,14 @@ public class AU {
                 md.update(signature.toByteArray());
                 String something = Base64.encodeToString(md.digest(), Base64.DEFAULT);
                 //String something = new String(Base64.encodeBytes(md.digest()));
-                Log.e(LOG_TAG,"KeyHash: " + something);
+                Log.e(LOG_TAG, "KeyHash: " + something);
             }
         } catch (PackageManager.NameNotFoundException e1) {
-            Log.e(LOG_TAG,"name not found" + e1.toString());
+            Log.e(LOG_TAG, "name not found" + e1.toString());
         } catch (NoSuchAlgorithmException e) {
-            Log.e(LOG_TAG,"no such an algorithm" + e.toString());
+            Log.e(LOG_TAG, "no such an algorithm" + e.toString());
         } catch (Exception e) {
-            Log.e(LOG_TAG,"exception" + e.toString());
+            Log.e(LOG_TAG, "exception" + e.toString());
         }
     }
 

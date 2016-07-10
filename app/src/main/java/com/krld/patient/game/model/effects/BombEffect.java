@@ -3,6 +3,7 @@ package com.krld.patient.game.model.effects;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+
 import com.krld.patient.game.Utils;
 import com.krld.patient.game.camera.GameCamera;
 import com.krld.patient.game.model.Point;
@@ -15,61 +16,61 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BombEffect extends Effect {
-	private final float effectStartRadius;
-	float effectCurrentRadius;
-	float effectMaxRadius;
+    private final float effectStartRadius;
+    float effectCurrentRadius;
+    float effectMaxRadius;
 
-	public BombEffect(Unit owner) {
-		super(owner);
-		effectStartRadius = 20;
-		effectCurrentRadius = effectStartRadius;
-		durationTime = 0.3f;
-		effectMaxRadius = 230;
+    public BombEffect(Unit owner) {
+        super(owner);
+        effectStartRadius = 20;
+        effectCurrentRadius = effectStartRadius;
+        durationTime = 0.3f;
+        effectMaxRadius = 230;
 
-		float cx = owner.x;
-		float cy = owner.y;
-		position = new Point(cx, cy);
+        float cx = owner.x;
+        float cy = owner.y;
+        position = new Point(cx, cy);
 
-		owner.context.decals.add(new BombSpot(owner.x, owner.y, owner.context));
-	}
+        owner.context.decals.add(new BombSpot(owner.x, owner.y, owner.context));
+    }
 
-	public void draw(Canvas canvas, Paint paint, GameCamera camera) {
-		paint.setColor(Color.RED);
-		paint.setAlpha(200);
-		float cx = position.getX() - camera.getX();
-		float cy = position.getY() - camera.getY();
-		canvas.drawCircle(cx, cy, effectCurrentRadius, paint);
-		paint.setColor(Color.YELLOW);
-		paint.setAlpha(88);
-		canvas.drawCircle(cx, cy, effectCurrentRadius / 5, paint);
-		paint.setAlpha(255);
+    public void draw(Canvas canvas, Paint paint, GameCamera camera) {
+        paint.setColor(Color.RED);
+        paint.setAlpha(200);
+        float cx = position.getX() - camera.getX();
+        float cy = position.getY() - camera.getY();
+        canvas.drawCircle(cx, cy, effectCurrentRadius, paint);
+        paint.setColor(Color.YELLOW);
+        paint.setAlpha(88);
+        canvas.drawCircle(cx, cy, effectCurrentRadius / 5, paint);
+        paint.setAlpha(255);
 
-	}
+    }
 
-	public void doEffect(float delta) {
-		super.doEffect(delta);
+    public void doEffect(float delta) {
+        super.doEffect(delta);
 
-		List<Creep> unitsToRemove = null;
-		for (Creep creep : owner.context.creeps) {
-			if (Utils.getDistance(position, creep) < effectCurrentRadius) {
-				if (unitsToRemove == null)
-					unitsToRemove = new ArrayList<Creep>();
-				creep.die();
-				unitsToRemove.add(creep);
-			}
+        List<Creep> unitsToRemove = null;
+        for (Creep creep : owner.context.creeps) {
+            if (Utils.getDistance(position, creep) < effectCurrentRadius) {
+                if (unitsToRemove == null)
+                    unitsToRemove = new ArrayList<Creep>();
+                creep.die();
+                unitsToRemove.add(creep);
+            }
 
-		}
-		if (unitsToRemove != null) {
-			owner.context.creeps.removeAll(unitsToRemove);
-		}
+        }
+        if (unitsToRemove != null) {
+            owner.context.creeps.removeAll(unitsToRemove);
+        }
 
-		for (Bullet needle : owner.context.bullets) {
-			if (Utils.getDistance(owner, needle) < effectCurrentRadius) {
+        for (Bullet needle : owner.context.bullets) {
+            if (Utils.getDistance(owner, needle) < effectCurrentRadius) {
 
-				needle.reverseDirection(owner);
-			}
-		}
-		float deltaRadius = effectMaxRadius - effectStartRadius;
-		effectCurrentRadius = Math.min(deltaRadius * (currentLifeTime / durationTime), effectMaxRadius);
-	}
+                needle.reverseDirection(owner);
+            }
+        }
+        float deltaRadius = effectMaxRadius - effectStartRadius;
+        effectCurrentRadius = Math.min(deltaRadius * (currentLifeTime / durationTime), effectMaxRadius);
+    }
 }

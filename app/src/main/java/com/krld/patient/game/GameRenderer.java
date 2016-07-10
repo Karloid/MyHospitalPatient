@@ -16,7 +16,11 @@ import com.krld.patient.game.model.effects.Effect;
 
 import java.util.List;
 
-import static com.krld.patient.game.UIConstants.*;
+import static com.krld.patient.game.UIConstants.HP_BAR_HEIGHT;
+import static com.krld.patient.game.UIConstants.HP_BAR_MARGIN;
+import static com.krld.patient.game.UIConstants.HP_BAR_WIDTH;
+import static com.krld.patient.game.UIConstants.SCORE_LEFT_MARGIN;
+import static com.krld.patient.game.UIConstants.SCORE_TOP_MARGIN;
 
 public class GameRenderer {
     public static final String TAP_TO_RESTART = "Tap to restart!";

@@ -2,8 +2,6 @@ package com.krld.patient.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -58,7 +56,7 @@ public class MenuView extends FrameLayout implements ActiveView {
 
     @Override
     public void onPause() {
-       mBackground.onPause();
+        mBackground.onPause();
     }
 
     @Override

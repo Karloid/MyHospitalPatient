@@ -15,12 +15,11 @@ import com.krld.patient.game.model.Point;
 import com.krld.patient.game.model.Unit;
 import com.krld.patient.game.model.animations.Animation;
 import com.krld.patient.game.model.animations.CloudAnimation;
-import com.krld.patient.utils.AU;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.krld.patient.utils.AU.*;
+import static com.krld.patient.utils.AU.dp;
 
 public class BackgroundView extends View implements View.OnTouchListener, ActiveView {
     public static final float CLOUD_RECREATE_RATIO = 0.4f;
