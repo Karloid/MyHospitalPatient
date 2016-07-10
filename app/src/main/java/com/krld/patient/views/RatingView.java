@@ -44,12 +44,14 @@ public class RatingView extends FrameLayout implements ActiveView {
         mContainer.removeAllViews();
         Scores scores = Application.getAllScores();
         LayoutInflater inflater = LayoutInflater.from(getContext());
+        int index = 0;
         if (scores.allScores != null && !scores.allScores.isEmpty()) {
             for (PlayerScore score : scores.allScores) {
                 View row = inflater.inflate(R.layout.rating_li, mContainer, false);
-                ((TextView) row.findViewById(R.id.rating_username)).setText(score.playerName);
+                ((TextView) row.findViewById(R.id.rating_username)).setText(index + ". " + score.playerName);
                 ((TextView) row.findViewById(R.id.rating_score)).setText(score.score + "");
                 mContainer.addView(row);
+                index++;
             }
         } else {
             View empty = inflater.inflate(R.layout.rating_li_empty, mContainer, true);

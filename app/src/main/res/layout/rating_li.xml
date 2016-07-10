@@ -14,12 +14,16 @@
     <TextView
         android:id="@+id/rating_username"
         style="@style/rating_textView"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:singleLine="true"
         tools:text="Vasiliy" />
 
     <TextView
         android:id="@+id/rating_score"
         style="@style/rating_textView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:gravity="right"
         android:textSize="20sp"
         android:textStyle="bold"

@@ -15,6 +15,9 @@ public class Scores {
         allScores.add(playerScore);
         Log.d(Application.TAG, "add score " + playerScore);
         Collections.sort(allScores, (lhs, rhs) -> rhs.score - lhs.score);
+        while (allScores.size() > 5) {
+            allScores.remove(5);
+        }
     }
 
     @SuppressWarnings("SimplifiableIfStatement")
