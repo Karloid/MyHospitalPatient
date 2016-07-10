@@ -119,8 +119,8 @@ public class BackgroundView extends View implements View.OnTouchListener, Active
     private void initLevels() {
         mLevels = new ArrayList<>();
         //	mLevels.add(new Level(getResources().getColor(R.color.level_1), 20, 20));
-        mLevels.add(new Level(colorLevel2, dp(5), dp(43)));
-        mLevels.add(new Level(colorLevel3, dp(3), dp(70)));
+        mLevels.add(new Level(colorLevel2, 5, dp(43)));
+        mLevels.add(new Level(colorLevel3, 3, dp(70)));
     }
 
     private void drawLevels(Canvas canvas, Paint paint) {
