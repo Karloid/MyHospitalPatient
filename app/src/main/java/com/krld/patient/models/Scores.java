@@ -3,6 +3,7 @@ package com.krld.patient.models;
 import android.util.Log;
 
 import com.krld.patient.Application;
+import com.krld.patient.utils.AU;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +30,7 @@ public class Scores {
     }
 
     public void saveScore(String playerName, int score) {
-        PlayerScore playerScore = new PlayerScore(playerName, score);
+        PlayerScore playerScore = new PlayerScore(playerName, score, AU.getAppVersion());
         addScore(playerScore);
         Application.saveLastPlayerName(playerName);
         Application.saveScores(this);

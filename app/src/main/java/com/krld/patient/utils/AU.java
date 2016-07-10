@@ -782,4 +782,13 @@ public class AU {
         return str.toString();
     }
 
+    public static String getAppVersion() {
+        Context context = Application.getInstance();
+        try {
+            return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return "1.0";
+    }
 }
