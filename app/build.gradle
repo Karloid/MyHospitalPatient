@@ -14,11 +14,11 @@ android {
     buildToolsVersion "23.0.3"
 
     defaultConfig {
-        applicationId "com.krld.mypatient"
+        applicationId "com.krld.patient"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 9
-        versionName "1.8"
+        versionCode 10
+        versionName "2.0"
     }
 
     compileOptions {
