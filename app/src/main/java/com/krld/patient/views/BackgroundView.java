@@ -19,37 +19,55 @@ import com.krld.patient.game.model.animations.CloudAnimation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BackgroundView extends View implements View.OnTouchListener {
+import static com.krld.patient.utils.AU.dp;
+
+public class BackgroundView extends View implements View.OnTouchListener, ActiveView {
     public static final float CLOUD_RECREATE_RATIO = 0.4f;
-    private int mEndColor;
+    static final long BACKGROUND_DRAW_DELAY = 10;
     private List<Level> mLevels;
     private List<Animation> animations;
     private List<Animation> animationsCopy;
     private int currentTick;
     private Paint paint;
     private Point touchPoint;
+    private Thread mDrawer;
+
+
+    public int colorFade = Color.BLACK;
+    public int colorEnd;
+    public int colorLevel2;
+    public int colorLevel3;
+
 
     public BackgroundView(Context context) {
         super(context);
+        initDefaultColors();
         init();
     }
 
     public BackgroundView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        initDefaultColors();
         init();
     }
 
     public BackgroundView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        initDefaultColors();
         init();
     }
 
     private void init() {
-        mEndColor = getResources().getColor(R.color.background_end);
-        animations = new ArrayList<Animation>();
+        animations = new ArrayList<>();
         CloudAnimation.init(getResources());
         setOnTouchListener(this);
         paint = new Paint();
+    }
+
+    private void initDefaultColors() {
+        colorEnd = getResources().getColor(R.color.background_end);
+        colorLevel2 = getResources().getColor(R.color.level_2);
+        colorLevel3 = getResources().getColor(R.color.level_3);
     }
 
     @Override
@@ -67,10 +85,10 @@ public class BackgroundView extends View implements View.OnTouchListener {
     private void drawVersionCode(Canvas canvas, Paint paint) {
         try {
             String versionName = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0).versionName;
-            paint.setTextSize(35);
+            paint.setTextSize(dp(20));
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(getResources().getColor(R.color.version_text_color));
-            canvas.drawText(versionName, 0, canvas.getHeight() - 5, paint);
+            canvas.drawText(versionName, 0, canvas.getHeight() - dp(2), paint);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -81,18 +99,17 @@ public class BackgroundView extends View implements View.OnTouchListener {
 
         if (alphaLevel < 0) return;
         currentTick++;
-        paint.setColor(Color.BLACK);
+        paint.setColor(colorFade);
         paint.setAlpha(alphaLevel);
         canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), paint);
     }
 
 
     private void drawDrawable(List<? extends Unit> drawables, Canvas canvas, Paint paint) {
-        List<? extends Unit> localDrawables = drawables;
-        if (localDrawables == null) {
+        if (drawables == null) {
             return;
         }
-        for (Unit drawable : localDrawables) {
+        for (Unit drawable : drawables) {
             if (!drawable.isVisible()) continue;
             Bitmap bitmap = drawable.getBitmap();
             canvas.drawBitmap(bitmap, drawable.x, drawable.y, paint);
@@ -100,10 +117,10 @@ public class BackgroundView extends View implements View.OnTouchListener {
     }
 
     private void initLevels() {
-        mLevels = new ArrayList<Level>();
+        mLevels = new ArrayList<>();
         //	mLevels.add(new Level(getResources().getColor(R.color.level_1), 20, 20));
-        mLevels.add(new Level(getResources().getColor(R.color.level_2), 5, 86));
-        mLevels.add(new Level(getResources().getColor(R.color.level_3), 3, 130));
+        mLevels.add(new Level(colorLevel2, 5, dp(43)));
+        mLevels.add(new Level(colorLevel3, 3, dp(70)));
     }
 
     private void drawLevels(Canvas canvas, Paint paint) {
@@ -113,14 +130,14 @@ public class BackgroundView extends View implements View.OnTouchListener {
     }
 
     private void drawEnd(Canvas canvas, Paint paint) {
-        paint.setColor(mEndColor);
+        paint.setColor(colorEnd);
         canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), paint);
     }
 
     public void update(float delta) {
         addNewAnimations(delta);
         moveUnits(delta, animations);
-        animationsCopy = new ArrayList<Animation>(animations);
+        animationsCopy = new ArrayList<>(animations);
         if (mLevels != null)
             for (Level level : mLevels) {
                 level.update(delta);
@@ -148,23 +165,72 @@ public class BackgroundView extends View implements View.OnTouchListener {
     private void moveUnits(float delta, List<? extends Unit> units) {
         try {
 
-        List<Unit> unitsToRemove = null;
-        for (Unit unit : units) {
-            unit.move(delta);
-            if (unit.needRemove()) {
-                if (unitsToRemove == null) {
-                    unitsToRemove = new ArrayList<Unit>();
+            List<Unit> unitsToRemove = null;
+            for (Unit unit : units) {
+                unit.move(delta);
+                if (unit.needRemove()) {
+                    if (unitsToRemove == null) {
+                        unitsToRemove = new ArrayList<Unit>();
+                    }
+                    unitsToRemove.add(unit);
                 }
-                unitsToRemove.add(unit);
             }
-        }
 
-        if (unitsToRemove != null) {
-            units.removeAll(unitsToRemove);
-        }
+            if (unitsToRemove != null) {
+                units.removeAll(unitsToRemove);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void createDrawerThread() {
+        mDrawer = new Thread(this::drawerLoop);
+        mDrawer.start();
+    }
+
+    private void drawerLoop() {
+        long currentTime;
+        long lastTime = System.currentTimeMillis();
+        float delta;
+        long delay;
+        try {
+            while (true) {
+                currentTime = System.currentTimeMillis();
+                delta = (currentTime - lastTime) / 1000f;
+                lastTime = currentTime;
+
+                update(delta);
+                postInvalidate();
+                Thread.sleep(BackgroundView.BACKGROUND_DRAW_DELAY);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        mDrawer.interrupt();
+    }
+
+    @Override
+    public void onResume() {
+        createDrawerThread();
+    }
+
+    @Override
+    public View getView() {
+        return this;
+    }
+
+    @Override
+    public void onShow() {
+
+    }
+
+    public void refreshColors() {
+        initLevels();
     }
 
 
@@ -191,7 +257,7 @@ public class BackgroundView extends View implements View.OnTouchListener {
         }
 
         public void draw(Canvas canvas, Paint paint) {
-            paint.setColor(Color.BLACK);
+            paint.setColor(colorFade);
             paint.setAlpha(100);
             for (Rectangle rect : mRectangles) {
                 canvas.drawRect(0, rect.mY + mHeight / 4, canvas.getWidth(), rect.mY + mHeight + mHeight / 4, paint);

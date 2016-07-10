@@ -17,6 +17,18 @@
         <item name="colorPrimaryDark">@color/black</item>
     </style>
 
+    <style name="rating_textView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:shadowColor">#122b2a</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">20</item>
+        <item name="android:textColor">@color/rating_accent</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
     <color name="white">#fff</color>
     <color name="black">#000</color>
     <color name="black2">#484848</color>

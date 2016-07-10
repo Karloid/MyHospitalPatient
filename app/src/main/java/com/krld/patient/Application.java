@@ -1,6 +1,9 @@
 package com.krld.patient;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -14,12 +17,14 @@ public class Application extends android.app.Application {
     private static Application instance;
     private static String KEY_LAST_PLAYER_NAME = "key last player name";
     private static String KEY_ALL_SCORES = "key all scores";
+    public static Handler handler;
 
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
-        //TODO something
+
+        handler = new Handler(Looper.getMainLooper());
     }
 
     public static String getLastPlayerName() {
@@ -58,5 +63,9 @@ public class Application extends android.app.Application {
         SharedPreferences.Editor edit = getSharedPrefs().edit();
         edit.putString(KEY_LAST_PLAYER_NAME, playerName);
         edit.apply();
+    }
+
+    public static Context getInstance() {
+        return instance;
     }
 }

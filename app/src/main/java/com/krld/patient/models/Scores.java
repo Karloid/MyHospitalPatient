@@ -3,6 +3,7 @@ package com.krld.patient.models;
 import android.util.Log;
 
 import com.krld.patient.Application;
+import com.krld.patient.utils.AU;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +16,9 @@ public class Scores {
         allScores.add(playerScore);
         Log.d(Application.TAG, "add score " + playerScore);
         Collections.sort(allScores, (lhs, rhs) -> rhs.score - lhs.score);
+        while (allScores.size() > 5) {
+            allScores.remove(5);
+        }
     }
 
     @SuppressWarnings("SimplifiableIfStatement")
@@ -26,10 +30,17 @@ public class Scores {
     }
 
     public void saveScore(String playerName, int score) {
-        PlayerScore playerScore = new PlayerScore(playerName, score);
+        PlayerScore playerScore = new PlayerScore(playerName, score, AU.getAppVersion());
         addScore(playerScore);
         Application.saveLastPlayerName(playerName);
         Application.saveScores(this);
 
+    }
+
+    public int getBestScore() {
+        if (!allScores.isEmpty()) {
+            return allScores.get(0).score;
+        }
+        return 0;
     }
 }

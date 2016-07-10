@@ -14,9 +14,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.EditText;
 
-import com.krld.patient.Constants;
-import com.krld.patient.views.ActiveView;
 import com.krld.patient.Application;
+import com.krld.patient.Constants;
 import com.krld.patient.R;
 import com.krld.patient.game.camera.GameCamera;
 import com.krld.patient.game.model.Background;
@@ -25,7 +24,11 @@ import com.krld.patient.game.model.Unit;
 import com.krld.patient.game.model.animations.Animation;
 import com.krld.patient.game.model.animations.BloodAnimation;
 import com.krld.patient.game.model.animations.CloudAnimation;
-import com.krld.patient.game.model.bonuses.*;
+import com.krld.patient.game.model.bonuses.BombBonus;
+import com.krld.patient.game.model.bonuses.Bonus;
+import com.krld.patient.game.model.bonuses.Medkit;
+import com.krld.patient.game.model.bonuses.ShieldBonus;
+import com.krld.patient.game.model.bonuses.SpeedBonus;
 import com.krld.patient.game.model.bullets.Bullet;
 import com.krld.patient.game.model.bullets.Needle;
 import com.krld.patient.game.model.bullets.Note;
@@ -35,6 +38,7 @@ import com.krld.patient.game.model.creeps.Nurse;
 import com.krld.patient.game.model.decals.BloodSpot;
 import com.krld.patient.game.model.decals.BombSpot;
 import com.krld.patient.game.model.decals.Decal;
+import com.krld.patient.views.ActiveView;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -116,6 +120,7 @@ public class GameView extends SurfaceView implements ActiveView {
 
     private void initGame() {
         Log.i(Application.TAG, "INIT");
+        cleanUp();
         debugMessage = "";
         score = 0;
         tick = 0;
@@ -133,6 +138,12 @@ public class GameView extends SurfaceView implements ActiveView {
         animations = new LinkedList<>();
         //	final MediaPlayer mp = MediaPlayer.create(context, R.raw.s1);
         createAndStartRunner();
+    }
+
+    private void cleanUp() {
+        if (background != null) {
+            background.cleanUp();
+        }
     }
 
     private void createAndStartRunner() {
@@ -178,8 +189,7 @@ public class GameView extends SurfaceView implements ActiveView {
     }
 
     private void loadBestScore() {
-        SharedPreferences preferences = ((Activity) getContext()).getPreferences(Context.MODE_PRIVATE);
-        bestScore = preferences.getInt(Constants.BEST_SCORE_KEY, 0);
+        bestScore = Application.getAllScores().getBestScore();
     }
 
     private void initSprites() {
@@ -278,8 +288,8 @@ public class GameView extends SurfaceView implements ActiveView {
             gameOver = true;
             gameOverTime = System.currentTimeMillis();
             if (score >= bestScore) {
-                bestScore = score;
-                saveBestScore();
+                /*bestScore = score;
+                saveBestScore();*/
             }
 
             if (!Application.getAllScores().isNewRecord(score)) {
@@ -452,15 +462,22 @@ public class GameView extends SurfaceView implements ActiveView {
         }
     }
 
+    @Override
+    public View getView() {
+        return this;
+    }
+
+    @Override
+    public void onShow() {
+
+    }
+
     public long getTick() {
         return tick;
     }
 
     public void increaseScore(int reward) {
         score += reward;
-        if (score > getBestScore()) {
-            setBestScore(score);
-        }
     }
 
     public void setBestScore(int bestScore) {
